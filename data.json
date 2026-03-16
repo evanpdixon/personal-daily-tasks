@@ -92,17 +92,6 @@
       ]
     },
     {
-      "id": "weather",
-      "title": "Weather Alerts Research",
-      "tasks": [
-        {
-          "text": "Investigate weather alerts for UV Pro, 6x2, 7x2",
-          "sub": "Research weather alert capabilities and configuration for these radios",
-          "done": false
-        }
-      ]
-    },
-    {
       "id": "admin",
       "title": "Administrative Work",
       "tasks": [
@@ -136,6 +125,14 @@
   "grocery": [],
   "notes": "",
   "backlog": [
+    {
+      "id": "bt-1773700021866",
+      "title": "Investigate weather alerts for UV Pro, 6x2, 7x2",
+      "detail": "Research weather alert capabilities and configuration for these radios",
+      "priority": "medium",
+      "category": "Weather Alerts Research",
+      "source": "daily"
+    },
     {
       "id": "bt-1773700014843",
       "title": "Create written guide / blog post for Chirp programming",
