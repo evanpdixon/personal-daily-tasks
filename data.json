@@ -160,7 +160,7 @@
       "tasks": [
         {
           "text": "3 radio kit options — update",
-          "done": true
+          "done": false
         },
         {
           "text": "Fix /shop/ 404 error",
