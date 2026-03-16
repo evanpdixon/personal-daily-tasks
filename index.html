@@ -259,7 +259,24 @@
             </div>
         </div>
 
-        <!-- 2. BS-50 PRODUCT LISTING -->
+        <!-- 2. UV PRO RESEARCH -->
+        <div class="priority-section" data-section="uvpro">
+            <div class="priority-header" onclick="toggleSection(this)">
+                <h2>UV Pro App Research</h2>
+                <span class="badge" data-badge="uvpro">0/1</span>
+            </div>
+            <div class="priority-body">
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Research UVPRO Windows/Android app
+                        <span class="sub">Evaluate available apps, compatibility, features, and integration options</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. BS-50 PRODUCT LISTING -->
         <div class="priority-section" data-section="bs50">
             <div class="priority-header" onclick="toggleSection(this)">
                 <h2>Add BS-50 to Website</h2>
@@ -356,12 +373,14 @@
         <div class="priority-section" data-section="grocery">
             <div class="priority-header" onclick="toggleSection(this)">
                 <h2>Grocery Store Trip</h2>
-                <span class="badge" data-badge="grocery">2 items</span>
+                <span class="badge" data-badge="grocery">4 items</span>
             </div>
             <div class="priority-body">
                 <ul class="grocery-list" id="grocery-list">
                     <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Ziploc bags</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
                     <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Protein shakes</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
+                    <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Milk</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
+                    <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Protein powder</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
                 </ul>
                 <div class="add-item">
                     <input type="text" id="grocery-input" placeholder="Add item..." onkeydown="if(event.key==='Enter')addGroceryItem()">
