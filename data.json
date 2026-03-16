@@ -154,6 +154,15 @@
           "done": false
         }
       ]
+    },
+    {
+      "title": "From Backlog",
+      "tasks": [
+        {
+          "text": "3 radio kit options — update",
+          "done": false
+        }
+      ]
     }
   ],
   "grocery": [
@@ -1992,7 +2001,8 @@
       "tags": [
         "products"
       ],
-      "category": "Products"
+      "category": "Products",
+      "movedToToday": true
     },
     {
       "id": "d50",
