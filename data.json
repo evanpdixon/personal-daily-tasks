@@ -172,10 +172,6 @@
   ],
   "grocery": [
     {
-      "text": "Ziploc bags",
-      "done": true
-    },
-    {
       "text": "Protein shakes",
       "done": true
     },
