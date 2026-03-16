@@ -113,11 +113,6 @@
         {
           "text": "3 radio kit options — update",
           "done": false
-        },
-        {
-          "text": "Fix /shop/ 404 error",
-          "done": false,
-          "sub": "WooCommerce Settings > Advanced > Page Setup — actively turning away buyers"
         }
       ]
     }
@@ -125,6 +120,14 @@
   "grocery": [],
   "notes": "",
   "backlog": [
+    {
+      "id": "bt-1773700028408",
+      "title": "Fix /shop/ 404 error",
+      "detail": "WooCommerce Settings > Advanced > Page Setup — actively turning away buyers",
+      "priority": "medium",
+      "category": "From Backlog",
+      "source": "daily"
+    },
     {
       "id": "bt-1773700021866",
       "title": "Investigate weather alerts for UV Pro, 6x2, 7x2",
