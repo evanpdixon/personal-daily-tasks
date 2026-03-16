@@ -137,10 +137,31 @@
             transform: translate(-50%, -50%);
         }
         .task-card.checked .tc-title { text-decoration: line-through; color: #484f58; }
-        .tc-content { flex: 1; }
-        .tc-title { font-size: 0.95rem; line-height: 1.4; }
+        .task-card.checked .tc-detail { color: #484f58; }
+        .tc-content { flex: 1; min-width: 0; }
+        .tc-title {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            cursor: pointer;
+            padding: 2px 4px;
+            margin: -2px -4px;
+            border-radius: 4px;
+        }
+        .tc-title:hover { background: #21262d; }
+        .tc-title-input {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            background: #0d1117;
+            border: 1px solid #e5a00d;
+            color: #c9d1d9;
+            padding: 4px 8px;
+            border-radius: 4px;
+            width: 100%;
+            font-family: inherit;
+        }
+        .tc-title-input:focus { outline: none; }
         .tc-detail { color: #8b949e; font-size: 0.82rem; margin-top: 3px; }
-        .tc-meta { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+        .tc-meta { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
         .tc-tag {
             font-size: 0.7rem;
             padding: 1px 7px;
@@ -151,6 +172,34 @@
         .tc-tag.high { background: #4a1c1c; color: #f85149; }
         .tc-tag.medium { background: #3d2e00; color: #e5a00d; }
         .tc-tag.low { background: #0d2818; color: #3fb950; }
+
+        /* Action buttons on task cards */
+        .tc-actions {
+            display: flex;
+            gap: 4px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .tc-action-btn {
+            background: none;
+            border: 1px solid #30363d;
+            color: #8b949e;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+        .tc-action-btn:hover {
+            border-color: #e5a00d;
+            color: #e5a00d;
+            background: #161b22;
+        }
+        .tc-action-btn.today-btn:hover {
+            border-color: #3fb950;
+            color: #3fb950;
+        }
 
         .summary-bar {
             background: #161b22;
@@ -165,6 +214,77 @@
             color: #8b949e;
         }
         .summary-bar span { color: #e5a00d; font-weight: 600; }
+
+        /* Add Task Form */
+        .add-task-form {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .add-task-form h3 {
+            color: #e5a00d;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .form-row input[type="text"],
+        .form-row textarea {
+            flex: 1;
+            min-width: 200px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+        .form-row textarea {
+            min-height: 40px;
+            resize: vertical;
+        }
+        .form-row input:focus,
+        .form-row textarea:focus { outline: none; border-color: #e5a00d; }
+        .form-row select {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        .form-row select:focus { outline: none; border-color: #e5a00d; }
+        .add-task-btn {
+            background: #e5a00d;
+            color: #0d1117;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .add-task-btn:hover { background: #f0c040; }
+        .toggle-form-btn {
+            background: none;
+            border: 1px solid #30363d;
+            color: #e5a00d;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .toggle-form-btn:hover { background: #161b22; border-color: #e5a00d; }
 
         /* Save indicator */
         .save-indicator {
@@ -254,6 +374,9 @@
             header h1 { font-size: 1.3rem; }
             .controls { flex-direction: column; }
             .controls input, .controls select { width: 100%; }
+            .tc-actions { flex-direction: column; gap: 2px; }
+            .form-row { flex-direction: column; }
+            .form-row input, .form-row select, .form-row textarea { width: 100%; min-width: unset; }
         }
     </style>
 </head>
@@ -275,6 +398,32 @@
             <div class="tab active" data-source="all" onclick="setSource(this)">All<span class="count" id="count-all"></span></div>
             <div class="tab" data-source="roadmap" onclick="setSource(this)">Site Roadmap<span class="count" id="count-roadmap"></span></div>
             <div class="tab" data-source="dashboard" onclick="setSource(this)">Dashboard Todos<span class="count" id="count-dashboard"></span></div>
+        </div>
+
+        <!-- Add Task Toggle -->
+        <button class="toggle-form-btn" id="toggle-form-btn" onclick="toggleAddForm()">+ Add New Task</button>
+
+        <!-- Add Task Form (hidden by default) -->
+        <div class="add-task-form" id="add-task-form" style="display:none;">
+            <h3>Add New Backlog Task</h3>
+            <div class="form-row">
+                <input type="text" id="new-title" placeholder="Task title (required)">
+            </div>
+            <div class="form-row">
+                <textarea id="new-detail" placeholder="Description / detail (optional)" rows="2"></textarea>
+            </div>
+            <div class="form-row">
+                <select id="new-priority">
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
+                    <option value="low">Low Priority</option>
+                </select>
+                <input type="text" id="new-category" placeholder="Category (e.g. WooCommerce)" style="min-width:150px;">
+                <input type="text" id="new-phase" placeholder="Phase (e.g. Phase 1)" style="min-width:120px;">
+            </div>
+            <div class="form-row">
+                <button class="add-task-btn" onclick="addNewTask()">Add Task</button>
+            </div>
         </div>
 
         <div class="controls">
@@ -426,6 +575,150 @@ function showSaveIndicator(text, isError) {
 }
 
 // ════════════════════════════════════════════
+// Add New Task
+// ════════════════════════════════════════════
+function toggleAddForm() {
+    const form = document.getElementById('add-task-form');
+    const btn = document.getElementById('toggle-form-btn');
+    if (form.style.display === 'none') {
+        form.style.display = 'block';
+        btn.textContent = '- Hide Form';
+        document.getElementById('new-title').focus();
+    } else {
+        form.style.display = 'none';
+        btn.textContent = '+ Add New Task';
+    }
+}
+
+function addNewTask() {
+    const title = document.getElementById('new-title').value.trim();
+    if (!title) {
+        document.getElementById('new-title').style.borderColor = '#f85149';
+        document.getElementById('new-title').focus();
+        return;
+    }
+    document.getElementById('new-title').style.borderColor = '#30363d';
+
+    const detail = document.getElementById('new-detail').value.trim();
+    const priority = document.getElementById('new-priority').value;
+    const category = document.getElementById('new-category').value.trim();
+    const phase = document.getElementById('new-phase').value.trim();
+
+    const task = {
+        title: title,
+        priority: priority,
+        done: false
+    };
+    if (detail) task.detail = detail;
+    if (category) task.category = category;
+    if (phase) task.phase = phase;
+    task.source = 'dashboard';
+
+    if (!currentData.backlog) currentData.backlog = [];
+    currentData.backlog.unshift(task);
+
+    // Clear form
+    document.getElementById('new-title').value = '';
+    document.getElementById('new-detail').value = '';
+    document.getElementById('new-priority').value = 'medium';
+    document.getElementById('new-category').value = '';
+    document.getElementById('new-phase').value = '';
+
+    populateCategoryFilter();
+    updateTabCounts();
+    render();
+    scheduleSave();
+    showSaveIndicator('Task added', false);
+}
+
+// ════════════════════════════════════════════
+// Move to Today
+// ════════════════════════════════════════════
+function moveToToday(idx) {
+    const task = currentData.backlog[idx];
+    if (!task) return;
+
+    // Find or create a "From Backlog" section in sections
+    if (!currentData.sections) currentData.sections = [];
+    let backlogSection = currentData.sections.find(s => s.title === 'From Backlog');
+    if (!backlogSection) {
+        backlogSection = { title: 'From Backlog', tasks: [] };
+        currentData.sections.push(backlogSection);
+    }
+
+    // Check if already added (avoid duplicates)
+    const alreadyAdded = backlogSection.tasks.some(t => t.text === task.title);
+    if (alreadyAdded) {
+        showSaveIndicator('Already in today', true);
+        return;
+    }
+
+    // Add to daily section
+    const dailyTask = {
+        text: task.title,
+        done: false
+    };
+    if (task.detail) dailyTask.sub = task.detail;
+    backlogSection.tasks.push(dailyTask);
+
+    // Mark the backlog task so we know it was pulled in
+    task.movedToToday = true;
+
+    render();
+    scheduleSave();
+    showSaveIndicator('Moved to today', false);
+}
+
+// ════════════════════════════════════════════
+// Inline Edit
+// ════════════════════════════════════════════
+function startEdit(idx, titleEl) {
+    // Don't start edit if already editing
+    if (titleEl.querySelector('.tc-title-input')) return;
+
+    const task = currentData.backlog[idx];
+    const currentTitle = task.title;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'tc-title-input';
+    input.value = currentTitle;
+
+    // Replace the title text with the input
+    titleEl.textContent = '';
+    titleEl.appendChild(input);
+    input.focus();
+    input.select();
+
+    function finishEdit() {
+        const newTitle = input.value.trim();
+        if (newTitle && newTitle !== currentTitle) {
+            task.title = newTitle;
+            scheduleSave();
+        }
+        // Re-render to restore normal display
+        render();
+    }
+
+    input.addEventListener('blur', finishEdit);
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            input.blur();
+        }
+        if (e.key === 'Escape') {
+            input.value = currentTitle; // revert
+            input.blur();
+        }
+    });
+
+    // Prevent the click from bubbling and re-triggering
+    input.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+}
+
+// ════════════════════════════════════════════
 // Filtering & Rendering
 // ════════════════════════════════════════════
 function getFilteredTasks() {
@@ -468,15 +761,19 @@ function render() {
             if (t.category) tags.push(`<span class="tc-tag">${escapeHtml(t.category)}</span>`);
             if (t.effort) tags.push(`<span class="tc-tag">${escapeHtml(t.effort)}</span>`);
             if (t.source) tags.push(`<span class="tc-tag">${t.source}</span>`);
+            if (t.movedToToday) tags.push(`<span class="tc-tag" style="background:#0d2818;color:#3fb950;">in today</span>`);
             (t.tags || []).forEach(tag => tags.push(`<span class="tc-tag">${escapeHtml(tag)}</span>`));
 
             return `
                 <div class="task-card ${checkedClass}" data-idx="${realIdx}">
                     <input type="checkbox" ${checkedAttr} onchange="toggleBacklogTask(${realIdx}, this)">
                     <div class="tc-content">
-                        <div class="tc-title">${escapeHtml(t.title)}</div>
+                        <div class="tc-title" onclick="startEdit(${realIdx}, this)">${escapeHtml(t.title)}</div>
                         ${detail}
                         <div class="tc-meta">${tags.join('')}</div>
+                    </div>
+                    <div class="tc-actions">
+                        <button class="tc-action-btn today-btn" onclick="moveToToday(${realIdx})" title="Move to today's dashboard">&rarr; Today</button>
                     </div>
                 </div>`;
         }).join('');
@@ -519,6 +816,7 @@ function populateCategoryFilter() {
         if (cat) cats.add(cat);
     });
     const sel = document.getElementById('category-filter');
+    const currentVal = sel.value;
     sel.innerHTML = '<option value="all">All Categories</option>';
     [...cats].sort().forEach(c => {
         const opt = document.createElement('option');
@@ -526,6 +824,8 @@ function populateCategoryFilter() {
         opt.textContent = c;
         sel.appendChild(opt);
     });
+    // Restore selection if still valid
+    if ([...cats].includes(currentVal)) sel.value = currentVal;
 }
 
 function updateTabCounts() {
