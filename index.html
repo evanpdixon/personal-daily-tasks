@@ -580,10 +580,7 @@ function renderGrocery() {
 // ════════════════════════════════════════════
 function handleCheck(sectionIdx, taskIdx, el) {
     currentData.sections[sectionIdx].tasks[taskIdx].done = el.checked;
-    const task = el.closest('.task');
-    if (el.checked) task.classList.add('checked');
-    else task.classList.remove('checked');
-    updateProgress();
+    renderDashboard();
     scheduleSave();
 }
 
