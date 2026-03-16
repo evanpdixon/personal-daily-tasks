@@ -176,11 +176,11 @@
     },
     {
       "text": "Milk",
-      "done": false
+      "done": true
     },
     {
       "text": "Protein powder",
-      "done": false
+      "done": true
     }
   ],
   "notes": "",
