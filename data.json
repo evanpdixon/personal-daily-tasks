@@ -191,20 +191,6 @@
   "notes": "",
   "backlog": [
     {
-      "id": "c1",
-      "title": "Fix /shop/ 404 error",
-      "done": false,
-      "priority": "high",
-      "source": "roadmap",
-      "tags": [
-        "technical"
-      ],
-      "detail": "WooCommerce Settings > Advanced > Page Setup — actively turning away buyers",
-      "phase": "Phase 1: Critical Fixes",
-      "effort": "30 min",
-      "movedToToday": true
-    },
-    {
       "id": "c2",
       "title": "Add contact info to header & footer",
       "done": false,

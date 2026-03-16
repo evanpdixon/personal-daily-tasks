@@ -542,7 +542,10 @@ async function saveData() {
         });
 
         if (res.status === 409) {
+            // Re-fetch to get new SHA but keep our local data
+            const localData = JSON.parse(JSON.stringify(currentData));
             await fetchData();
+            currentData = localData;
             saving = false;
             await saveData();
             return;
