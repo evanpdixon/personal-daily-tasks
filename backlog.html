@@ -661,8 +661,8 @@ function moveToToday(idx) {
     if (task.detail) dailyTask.sub = task.detail;
     backlogSection.tasks.push(dailyTask);
 
-    // Mark the backlog task so we know it was pulled in
-    task.movedToToday = true;
+    // Remove from backlog
+    currentData.backlog.splice(idx, 1);
 
     render();
     scheduleSave();
