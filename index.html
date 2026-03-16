@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evan's Daily Dashboard — March 16, 2026</title>
+    <title>Evan's Daily Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -29,6 +29,13 @@
             color: #8b949e;
             font-size: 0.9rem;
             margin-top: 4px;
+        }
+        .header-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
         }
         .progress-bar {
             background: #161b22;
@@ -112,7 +119,7 @@
             border-color: #e5a00d;
         }
         .task input[type="checkbox"]:checked::after {
-            content: '✓';
+            content: '\2713';
             position: absolute;
             color: #0d1117;
             font-size: 14px;
@@ -125,10 +132,7 @@
         .task-text .sub { color: #8b949e; font-size: 0.85rem; display: block; }
 
         /* Grocery Section */
-        .grocery-list {
-            list-style: none;
-            padding: 0;
-        }
+        .grocery-list { list-style: none; padding: 0; }
         .grocery-list li {
             display: flex;
             align-items: center;
@@ -152,7 +156,7 @@
             border-color: #52c41a;
         }
         .grocery-list li input[type="checkbox"]:checked::after {
-            content: '✓';
+            content: '\2713';
             position: absolute;
             color: #0d1117;
             font-size: 12px;
@@ -212,7 +216,6 @@
         }
         .nav-link {
             display: inline-block;
-            margin-top: 10px;
             color: #e5a00d;
             text-decoration: none;
             font-size: 0.85rem;
@@ -221,6 +224,89 @@
             border-radius: 6px;
         }
         .nav-link:hover { background: #161b22; }
+        .settings-link {
+            color: #8b949e;
+            text-decoration: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .settings-link:hover { color: #e5a00d; }
+
+        /* Save indicator */
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1b4332;
+            color: #52c41a;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .save-indicator.show { opacity: 1; }
+        .save-indicator.error { background: #4a1c1c; color: #f85149; }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #0d1117ee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            color: #e5a00d;
+            font-size: 1.1rem;
+        }
+
+        /* PAT Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #0d1117ee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+        .modal {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 28px;
+            max-width: 480px;
+            width: 90%;
+        }
+        .modal h2 { color: #e5a00d; margin-bottom: 12px; font-size: 1.2rem; }
+        .modal p { color: #8b949e; font-size: 0.9rem; margin-bottom: 16px; line-height: 1.5; }
+        .modal input {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: monospace;
+            margin-bottom: 16px;
+        }
+        .modal input:focus { outline: none; border-color: #e5a00d; }
+        .modal button {
+            background: #e5a00d;
+            color: #0d1117;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .modal button:hover { background: #f0c040; }
+        .modal a { color: #e5a00d; font-size: 0.85rem; }
 
         /* Responsive */
         @media (max-width: 600px) {
@@ -231,157 +317,33 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="loading-overlay" id="loading">Loading dashboard...</div>
+    <div class="save-indicator" id="save-indicator">Saved</div>
+
+    <div class="container" id="app" style="display:none;">
         <header>
             <h1>Daily Dashboard</h1>
-            <div class="date">Monday, March 16, 2026</div>
+            <div class="date" id="header-date"></div>
             <div class="time-now" id="clock"></div>
-            <a href="backlog.html" class="nav-link">View Full Backlog (284 tasks)</a>
+            <div class="header-links">
+                <a href="backlog.html" class="nav-link" id="backlog-link">View Full Backlog</a>
+                <a class="settings-link" onclick="showPatModal()">&#9881; Settings</a>
+            </div>
         </header>
 
         <div class="progress-label"><span id="done-count">0</span> of <span id="total-count">0</span> tasks complete</div>
         <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
 
-        <!-- 1. RADIO FILES — PATRICK GREEN -->
-        <div class="priority-section" data-section="patrick">
-            <div class="priority-header" onclick="toggleSection(this)">
-                <h2>Radio Files — Patrick Green</h2>
-                <span class="badge" data-badge="patrick">0/1</span>
-            </div>
-            <div class="priority-body">
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Convert existing radio files for the D578
-                        <span class="sub">Take current files and prep/convert for Patrick's D578 radio</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="sections-container"></div>
 
-        <!-- 2. UV PRO RESEARCH -->
-        <div class="priority-section" data-section="uvpro">
-            <div class="priority-header" onclick="toggleSection(this)">
-                <h2>UV Pro App Research</h2>
-                <span class="badge" data-badge="uvpro">0/1</span>
-            </div>
-            <div class="priority-body">
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Research UVPRO Windows/Android app
-                        <span class="sub">Evaluate available apps, compatibility, features, and integration options</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. BS-50 PRODUCT LISTING -->
-        <div class="priority-section" data-section="bs50">
-            <div class="priority-header" onclick="toggleSection(this)">
-                <h2>Add BS-50 to Website</h2>
-                <span class="badge" data-badge="bs50">0/3</span>
-            </div>
-            <div class="priority-body">
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Create BS-50 product listing on the site
-                        <span class="sub">Product photo, description, pricing — new standalone product page</span>
-                    </div>
-                </div>
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Add BS-50 as add-on for UV Pro via Product Options plugin
-                        <span class="sub">Add to UV Pro product page as a selectable accessory option</span>
-                    </div>
-                </div>
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Add BS-50 as add-on for UV-50 Pro via Product Options plugin
-                        <span class="sub">Add to UV-50 Pro product page as a selectable accessory option</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. RADIO WIZARD (Kit Builder) -->
-        <div class="priority-section" data-section="wizard">
-            <div class="priority-header" onclick="toggleSection(this)">
-                <h2>Radio Wizard — Kit Builder</h2>
-                <span class="badge" data-badge="wizard">0/2</span>
-            </div>
-            <div class="priority-body">
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Continue radio wizard implementation
-                        <span class="sub">Ongoing session — pick up where you left off</span>
-                    </div>
-                </div>
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Identify &amp; knock out low-hanging fruit on RME site
-                        <span class="sub">Quick wins from the site roadmap</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. MARKETING — ERIN -->
-        <div class="priority-section" data-section="marketing">
-            <div class="priority-header" onclick="toggleSection(this)">
-                <h2>Marketing — Connect with Erin</h2>
-                <span class="badge" data-badge="marketing">0/4</span>
-            </div>
-            <div class="priority-body">
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Plan this week's promotion
-                        <span class="sub">Likely a value-add email via Mailchimp — explore angle with Erin</span>
-                    </div>
-                </div>
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Discuss social media assets for the promotion
-                        <span class="sub">Erin creates social assets — align on deliverables</span>
-                    </div>
-                </div>
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Review marketing roadmap together
-                        <span class="sub">Align on upcoming priorities and timeline</span>
-                    </div>
-                </div>
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Prioritize Cheat Sheets — plan new collateral
-                        <span class="sub">Identify which cheat sheets are missing and start creating them</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. GROCERY STORE -->
-        <div class="priority-section" data-section="grocery">
+        <!-- Grocery Section -->
+        <div class="priority-section" id="grocery-section">
             <div class="priority-header" onclick="toggleSection(this)">
                 <h2>Grocery Store Trip</h2>
-                <span class="badge" data-badge="grocery">4 items</span>
+                <span class="badge" id="grocery-badge">0 items</span>
             </div>
             <div class="priority-body">
-                <ul class="grocery-list" id="grocery-list">
-                    <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Ziploc bags</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
-                    <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Protein shakes</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
-                    <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Milk</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
-                    <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Protein powder</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
-                </ul>
+                <ul class="grocery-list" id="grocery-list"></ul>
                 <div class="add-item">
                     <input type="text" id="grocery-input" placeholder="Add item..." onkeydown="if(event.key==='Enter')addGroceryItem()">
                     <button onclick="addGroceryItem()">Add</button>
@@ -389,202 +351,345 @@
             </div>
         </div>
 
-        <!-- 5. CONTENT CREATION -->
-        <div class="priority-section" data-section="content">
+        <!-- Notes Section -->
+        <div class="priority-section">
             <div class="priority-header" onclick="toggleSection(this)">
-                <h2>Content Creation</h2>
-                <span class="badge" data-badge="content">0/3</span>
+                <h2>Notes</h2>
+                <span class="badge">memo</span>
             </div>
             <div class="priority-body">
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Plan &amp; record "Getting Started in Radio" short-form video
-                        <span class="sub">45-60 sec max (fits YT Shorts, IG Reels, TikTok). Elevator pitch: why radio, what you need, how RME helps. Funnel to site/Zero to Hero. Script &rarr; record &rarr; post to all 3 platforms.</span>
-                    </div>
-                </div>
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Update Zero to Hero Chirp programming tutorial
-                        <span class="sub">Re-record/update the tutorial for current Chirp interface</span>
-                    </div>
-                </div>
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Create written guide / blog post for Chirp programming
-                        <span class="sub">Supplement the video with a written walkthrough — not video-only</span>
-                    </div>
-                </div>
+                <textarea class="notes-area" placeholder="Notes -- jot anything down here..." id="admin-notes" oninput="scheduleSave()"></textarea>
             </div>
         </div>
-
-        <!-- 6. ADMIN / OTHER -->
-        <div class="priority-section" data-section="admin">
-            <div class="priority-header" onclick="toggleSection(this)">
-                <h2>Administrative Work</h2>
-                <span class="badge" data-badge="admin">0/2</span>
-            </div>
-            <div class="priority-body">
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Check on t-shirt printing
-                        <span class="sub">High priority — check status and handle whatever's needed</span>
-                    </div>
-                </div>
-                <div class="task">
-                    <input type="checkbox" onchange="handleCheck(this)">
-                    <div class="task-text">
-                        Catch up on any remaining admin tasks
-                        <span class="sub">Email, invoices, order follow-ups, etc.</span>
-                    </div>
-                </div>
-                <div class="notes-area" placeholder="Notes — jot anything down here..." contenteditable="false"></div>
-                <textarea class="notes-area" placeholder="Notes — jot anything down here..." id="admin-notes" oninput="saveState()"></textarea>
-            </div>
-        </div>
-
     </div>
 
-    <script>
-        // ─── State persistence via localStorage ───
-        const STORAGE_KEY = 'daily-2026-03-16-v2';
+<script>
+// ════════════════════════════════════════════
+// GitHub API Configuration
+// ════════════════════════════════════════════
+const REPO = 'evanpdixon/personal-daily-tasks';
+const FILE_PATH = 'data.json';
+const API_BASE = 'https://api.github.com';
 
-        function saveState() {
-            const checks = [...document.querySelectorAll('.task input[type="checkbox"]')].map(c => c.checked);
-            const groceryItems = [...document.querySelectorAll('#grocery-list li')].map(li => ({
-                text: li.querySelector('span').textContent,
-                checked: li.querySelector('input').checked
-            }));
-            const notes = document.getElementById('admin-notes').value;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({ checks, groceryItems, notes }));
-            updateProgress();
+let currentData = null;
+let currentSha = null;
+let saveTimeout = null;
+let saving = false;
+
+// ════════════════════════════════════════════
+// PAT Management
+// ════════════════════════════════════════════
+function getPat() {
+    return localStorage.getItem('gh-pat');
+}
+
+function showPatModal() {
+    let existing = document.getElementById('pat-modal');
+    if (existing) existing.remove();
+    const modal = document.createElement('div');
+    modal.id = 'pat-modal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal">
+            <h2>GitHub Personal Access Token</h2>
+            <p>Enter a fine-grained PAT with <strong>Contents: Read & Write</strong> scope for the <code>evanpdixon/personal-daily-tasks</code> repo.</p>
+            <p><a href="https://github.com/settings/personal-access-tokens/new" target="_blank">Create a new token on GitHub</a></p>
+            <input type="password" id="pat-input" placeholder="github_pat_..." value="${getPat() || ''}">
+            <button onclick="savePat()">Save & Load</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    document.getElementById('pat-input').focus();
+}
+
+function savePat() {
+    const pat = document.getElementById('pat-input').value.trim();
+    if (!pat) return;
+    localStorage.setItem('gh-pat', pat);
+    document.getElementById('pat-modal').remove();
+    init();
+}
+
+// ════════════════════════════════════════════
+// GitHub API
+// ════════════════════════════════════════════
+async function fetchData() {
+    const pat = getPat();
+    const res = await fetch(`${API_BASE}/repos/${REPO}/contents/${FILE_PATH}`, {
+        headers: {
+            'Authorization': `Bearer ${pat}`,
+            'Accept': 'application/vnd.github.v3+json'
+        }
+    });
+    if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+            showPatModal();
+            throw new Error('Invalid token');
+        }
+        throw new Error(`GitHub API error: ${res.status}`);
+    }
+    const json = await res.json();
+    currentSha = json.sha;
+    const content = atob(json.content.replace(/\n/g, ''));
+    // Decode as UTF-8
+    const bytes = new Uint8Array(content.length);
+    for (let i = 0; i < content.length; i++) bytes[i] = content.charCodeAt(i);
+    const decoded = new TextDecoder().decode(bytes);
+    currentData = JSON.parse(decoded);
+    return currentData;
+}
+
+async function saveData() {
+    if (saving) return;
+    saving = true;
+    const pat = getPat();
+    const content = JSON.stringify(currentData, null, 2);
+    // Encode as base64 (UTF-8 safe)
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+
+    try {
+        const res = await fetch(`${API_BASE}/repos/${REPO}/contents/${FILE_PATH}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${pat}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `Dashboard update ${new Date().toISOString()}`,
+                content: encoded,
+                sha: currentSha
+            })
+        });
+
+        if (res.status === 409) {
+            // SHA conflict -- re-fetch and retry
+            await fetchData();
+            saving = false;
+            await saveData();
+            return;
         }
 
-        function loadState() {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            if (!raw) return;
-            try {
-                const state = JSON.parse(raw);
-                const checkboxes = document.querySelectorAll('.task input[type="checkbox"]');
-                state.checks.forEach((val, i) => {
-                    if (checkboxes[i]) {
-                        checkboxes[i].checked = val;
-                        if (val) checkboxes[i].closest('.task').classList.add('checked');
-                    }
-                });
-                if (state.groceryItems) {
-                    document.getElementById('grocery-list').innerHTML = '';
-                    state.groceryItems.forEach(item => {
-                        addGroceryItemDirect(item.text, item.checked);
-                    });
-                }
-                if (state.notes) {
-                    document.getElementById('admin-notes').value = state.notes;
-                }
-            } catch(e) {}
-            updateProgress();
+        if (!res.ok) {
+            throw new Error(`Save failed: ${res.status}`);
         }
 
-        // ─── Task checking ───
-        function handleCheck(el) {
-            const task = el.closest('.task');
-            if (el.checked) task.classList.add('checked');
-            else task.classList.remove('checked');
-            saveState();
-        }
+        const result = await res.json();
+        currentSha = result.content.sha;
+        showSaveIndicator('Saved', false);
+    } catch (e) {
+        console.error('Save error:', e);
+        showSaveIndicator('Save failed', true);
+    } finally {
+        saving = false;
+    }
+}
 
-        // ─── Grocery list ───
-        function addGroceryItem() {
-            const input = document.getElementById('grocery-input');
-            const text = input.value.trim();
-            if (!text) return;
-            addGroceryItemDirect(text, false);
-            input.value = '';
-            saveState();
-        }
+function scheduleSave() {
+    if (saveTimeout) clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        updateDataFromUI();
+        saveData();
+    }, 500);
+}
 
-        function addGroceryItemDirect(text, checked) {
-            const list = document.getElementById('grocery-list');
-            const li = document.createElement('li');
-            if (checked) li.classList.add('checked');
-            li.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleGrocery(this)"><span>${escapeHtml(text)}</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button>`;
-            list.appendChild(li);
-            updateGroceryBadge();
-        }
+function showSaveIndicator(text, isError) {
+    const el = document.getElementById('save-indicator');
+    el.textContent = text;
+    el.classList.toggle('error', isError);
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 1500);
+}
 
-        function toggleGrocery(el) {
-            const li = el.closest('li');
-            if (el.checked) li.classList.add('checked');
-            else li.classList.remove('checked');
-            saveState();
-        }
+// ════════════════════════════════════════════
+// Rendering
+// ════════════════════════════════════════════
+function renderDashboard() {
+    const data = currentData;
 
-        function removeGrocery(el) {
-            el.closest('li').remove();
-            saveState();
-        }
+    // Date
+    const d = new Date(data.date + 'T12:00:00');
+    const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('header-date').textContent = d.toLocaleDateString('en-US', opts);
 
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
+    // Backlog link
+    const backlogCount = data.backlog ? data.backlog.length : 0;
+    document.getElementById('backlog-link').textContent = `View Full Backlog (${backlogCount} tasks)`;
 
-        // ─── Section toggle ───
-        function toggleSection(header) {
-            const body = header.nextElementSibling;
-            body.style.display = body.style.display === 'none' ? 'block' : 'none';
-        }
+    // Sections
+    const container = document.getElementById('sections-container');
+    container.innerHTML = '';
+    data.sections.forEach((section, si) => {
+        const div = document.createElement('div');
+        div.className = 'priority-section';
+        div.dataset.sectionIdx = si;
 
-        // ─── Progress ───
-        function updateProgress() {
-            const all = document.querySelectorAll('.task input[type="checkbox"]');
-            const checked = [...all].filter(c => c.checked).length;
-            const total = all.length;
-            document.getElementById('done-count').textContent = checked;
-            document.getElementById('total-count').textContent = total;
-            const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
-            document.getElementById('progress-fill').style.width = pct + '%';
+        let tasksHtml = '';
+        section.tasks.forEach((task, ti) => {
+            const checked = task.done ? 'checked' : '';
+            const checkedClass = task.done ? 'checked' : '';
+            const subHtml = task.sub ? `<span class="sub">${escapeHtml(task.sub)}</span>` : '';
+            tasksHtml += `
+                <div class="task ${checkedClass}">
+                    <input type="checkbox" ${checked} onchange="handleCheck(${si}, ${ti}, this)">
+                    <div class="task-text">${escapeHtml(task.text)}${subHtml}</div>
+                </div>`;
+        });
 
-            // Update section badges
-            document.querySelectorAll('.priority-section').forEach(section => {
-                const name = section.dataset.section;
-                if (name === 'grocery') {
-                    updateGroceryBadge();
-                    return;
-                }
-                const tasks = section.querySelectorAll('.task input[type="checkbox"]');
-                const done = [...tasks].filter(c => c.checked).length;
-                const badge = section.querySelector('.badge');
-                badge.textContent = `${done}/${tasks.length}`;
-                if (done === tasks.length && tasks.length > 0) badge.classList.add('done');
-                else badge.classList.remove('done');
-            });
-        }
+        const doneCount = section.tasks.filter(t => t.done).length;
+        const totalCount = section.tasks.length;
+        const badgeClass = doneCount === totalCount && totalCount > 0 ? 'badge done' : 'badge';
 
-        function updateGroceryBadge() {
-            const items = document.querySelectorAll('#grocery-list li');
-            const badge = document.querySelector('[data-badge="grocery"]');
-            badge.textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
-        }
+        div.innerHTML = `
+            <div class="priority-header" onclick="toggleSection(this)">
+                <h2>${escapeHtml(section.title)}</h2>
+                <span class="${badgeClass}">${doneCount}/${totalCount}</span>
+            </div>
+            <div class="priority-body">${tasksHtml}</div>`;
+        container.appendChild(div);
+    });
 
-        // ─── Clock ───
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+    // Grocery
+    renderGrocery();
 
-        // ─── Init ───
-        loadState();
+    // Notes
+    document.getElementById('admin-notes').value = data.notes || '';
 
-        // Remove the contenteditable div (artifact)
-        const ceDiv = document.querySelector('.notes-area[contenteditable]');
-        if (ceDiv) ceDiv.remove();
-    </script>
+    updateProgress();
+}
+
+function renderGrocery() {
+    const list = document.getElementById('grocery-list');
+    list.innerHTML = '';
+    currentData.grocery.forEach((item, i) => {
+        const li = document.createElement('li');
+        if (item.done) li.classList.add('checked');
+        li.innerHTML = `<input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleGrocery(${i}, this)"><span>${escapeHtml(item.text)}</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(${i})" title="Remove">&times;</button>`;
+        list.appendChild(li);
+    });
+    updateGroceryBadge();
+}
+
+// ════════════════════════════════════════════
+// Interactions
+// ════════════════════════════════════════════
+function handleCheck(sectionIdx, taskIdx, el) {
+    currentData.sections[sectionIdx].tasks[taskIdx].done = el.checked;
+    const task = el.closest('.task');
+    if (el.checked) task.classList.add('checked');
+    else task.classList.remove('checked');
+    updateProgress();
+    scheduleSave();
+}
+
+function toggleGrocery(idx, el) {
+    currentData.grocery[idx].done = el.checked;
+    const li = el.closest('li');
+    if (el.checked) li.classList.add('checked');
+    else li.classList.remove('checked');
+    scheduleSave();
+}
+
+function removeGrocery(idx) {
+    currentData.grocery.splice(idx, 1);
+    renderGrocery();
+    scheduleSave();
+}
+
+function addGroceryItem() {
+    const input = document.getElementById('grocery-input');
+    const text = input.value.trim();
+    if (!text) return;
+    currentData.grocery.push({ text: text, done: false });
+    input.value = '';
+    renderGrocery();
+    scheduleSave();
+}
+
+function toggleSection(header) {
+    const body = header.nextElementSibling;
+    body.style.display = body.style.display === 'none' ? 'block' : 'none';
+}
+
+function updateDataFromUI() {
+    currentData.notes = document.getElementById('admin-notes').value;
+}
+
+// ════════════════════════════════════════════
+// Progress
+// ════════════════════════════════════════════
+function updateProgress() {
+    let total = 0, done = 0;
+    currentData.sections.forEach(s => {
+        s.tasks.forEach(t => {
+            total++;
+            if (t.done) done++;
+        });
+    });
+    document.getElementById('done-count').textContent = done;
+    document.getElementById('total-count').textContent = total;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+
+    // Update section badges
+    document.querySelectorAll('#sections-container .priority-section').forEach(div => {
+        const si = parseInt(div.dataset.sectionIdx);
+        const section = currentData.sections[si];
+        const d = section.tasks.filter(t => t.done).length;
+        const badge = div.querySelector('.badge');
+        badge.textContent = `${d}/${section.tasks.length}`;
+        if (d === section.tasks.length && section.tasks.length > 0) badge.classList.add('done');
+        else badge.classList.remove('done');
+    });
+
+    updateGroceryBadge();
+}
+
+function updateGroceryBadge() {
+    const count = currentData ? currentData.grocery.length : 0;
+    document.getElementById('grocery-badge').textContent = `${count} item${count !== 1 ? 's' : ''}`;
+}
+
+// ════════════════════════════════════════════
+// Utilities
+// ════════════════════════════════════════════
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+}
+
+// ════════════════════════════════════════════
+// Init
+// ════════════════════════════════════════════
+async function init() {
+    const pat = getPat();
+    if (!pat) {
+        document.getElementById('loading').style.display = 'none';
+        showPatModal();
+        return;
+    }
+
+    try {
+        document.getElementById('loading').style.display = 'flex';
+        await fetchData();
+        renderDashboard();
+        document.getElementById('app').style.display = 'block';
+    } catch (e) {
+        console.error('Init error:', e);
+    } finally {
+        document.getElementById('loading').style.display = 'none';
+    }
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+init();
+</script>
 </body>
 </html>
