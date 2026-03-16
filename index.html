@@ -531,12 +531,11 @@ function renderDashboard() {
             const checked = task.done ? 'checked' : '';
             const checkedClass = task.done ? 'checked' : '';
             const subHtml = task.sub ? `<span class="sub">${escapeHtml(task.sub)}</span>` : '';
-            const deleteBtn = task.done ? `<button onclick="deleteTask(${si}, ${ti})" title="Delete task" style="background:none;border:1px solid #4a1c1c;color:#f85149;cursor:pointer;font-size:0.7rem;padding:3px 8px;border-radius:4px;white-space:nowrap;">&times; Delete</button>` : '';
             tasksHtml += `
                 <div class="task ${checkedClass}">
                     <input type="checkbox" ${checked} onchange="handleCheck(${si}, ${ti}, this)">
                     <div class="task-text">${escapeHtml(task.text)}${subHtml}</div>
-                    ${deleteBtn}
+                    <button onclick="deleteTask(${si}, ${ti})" title="Delete task" style="background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;padding:0 4px;">&#128465;</button>
                     <button onclick="moveToBacklog(${si}, ${ti})" title="Move to backlog" style="background:none;border:1px solid #30363d;color:#8b949e;cursor:pointer;font-size:0.7rem;padding:3px 8px;border-radius:4px;white-space:nowrap;">&#8592; Backlog</button>
                 </div>`;
         });
