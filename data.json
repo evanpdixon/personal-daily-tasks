@@ -128,7 +128,9 @@
       ]
     }
   ],
-  "grocery": [],
+  "grocery": [
+    "Buy more protein powder"
+  ],
   "notes": "",
   "backlog": [
     {
