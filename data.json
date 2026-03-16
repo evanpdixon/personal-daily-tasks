@@ -76,17 +76,6 @@
       ]
     },
     {
-      "id": "content",
-      "title": "Content Creation",
-      "tasks": [
-        {
-          "text": "Create written guide / blog post for Chirp programming",
-          "sub": "Supplement the video with a written walkthrough — not video-only",
-          "done": false
-        }
-      ]
-    },
-    {
       "id": "errands",
       "title": "Errands & Around the House",
       "tasks": [
@@ -152,6 +141,14 @@
   "grocery": [],
   "notes": "",
   "backlog": [
+    {
+      "id": "bt-1773700014843",
+      "title": "Create written guide / blog post for Chirp programming",
+      "detail": "Supplement the video with a written walkthrough — not video-only",
+      "priority": "medium",
+      "category": "Content Creation",
+      "source": "daily"
+    },
     {
       "id": "bt-1773700014009",
       "title": "Update Zero to Hero Chirp programming tutorial",
