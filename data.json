@@ -80,11 +80,6 @@
       "title": "Content Creation",
       "tasks": [
         {
-          "text": "Plan & record \"Getting Started in Radio\" short-form video",
-          "sub": "45-60 sec max (fits YT Shorts, IG Reels, TikTok). Elevator pitch: why radio, what you need, how RME helps. Funnel to site/Zero to Hero. Script → record → post to all 3 platforms.",
-          "done": false
-        },
-        {
           "text": "Update Zero to Hero Chirp programming tutorial",
           "sub": "Re-record/update the tutorial for current Chirp interface. OUTLINE: Equipment needed: Windows laptop, USB programming cable (FTDI chipset), USB-A to USB-C OTG adapter, recommend 2 cables (Kenwood plug is fragile). Process: (1) Pull original file off radio and save as backup, (2) Duplicate to create working copy, (3) Build out using provided template — copy/paste and modify values, (4) Import repeaters from RepeaterBook, (5) Write to radio. Steps: Download from chirpmyradio.com (use ad blocker, go direct not via Google). Install Chirp Next EXE. Connect radio: set to inactive channel, remove antenna, plug cable firmly, connect USB (should hear Windows ding, no drivers needed). Radio > Download from Radio: select USB Serial Port (not Bluetooth), Vendor=Baofeng, Model=UV-5R (UV-5R Plus is same). Other radios check Chirp site for compatible models (e.g. AR-152 uses BF-8FHP). Progress bar + blinking light = working. Troubleshoot: power cycle, replug, try backup cable. Save original, duplicate, modify with template, import repeaters, write to radio.",
           "done": false
@@ -162,6 +157,14 @@
   "grocery": [],
   "notes": "",
   "backlog": [
+    {
+      "id": "bt-1773700012343",
+      "title": "Plan & record \"Getting Started in Radio\" short-form video",
+      "detail": "45-60 sec max (fits YT Shorts, IG Reels, TikTok). Elevator pitch: why radio, what you need, how RME helps. Funnel to site/Zero to Hero. Script → record → post to all 3 platforms.",
+      "priority": "medium",
+      "category": "Content Creation",
+      "source": "daily"
+    },
     {
       "id": "bt-1773699996183",
       "title": "Research UVPRO Windows/Android app",
