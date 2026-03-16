@@ -28,10 +28,13 @@ Voice command: "{message}"
 
 Rules:
 - For adding tasks: add to the most relevant existing section, or create a new section if none fit
-- For grocery items: add to the grocery array
+- Each task object MUST have: {{"text": "...", "sub": "...", "done": false}}
+- Each grocery item MUST be an object: {{"text": "...", "done": false}}
 - For marking done: set done=true on the matching task
 - For deleting: remove the task entirely
-- Return the FULL updated object with sections, grocery, and notes keys"""
+- Preserve all existing data exactly — do not rename sections or alter unrelated items
+- Return the FULL updated object with sections, grocery, and notes keys
+- Output raw JSON only — no markdown, no code fences, no explanation"""
 
     env = os.environ.copy()
     env.pop("CLAUDECODE", None)

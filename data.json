@@ -129,7 +129,7 @@
     }
   ],
   "grocery": [
-    "Buy more protein powder"
+    { "text": "Buy more protein powder", "done": false }
   ],
   "notes": "",
   "backlog": [
