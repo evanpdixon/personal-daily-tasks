@@ -172,10 +172,6 @@
   ],
   "grocery": [
     {
-      "text": "Milk",
-      "done": true
-    },
-    {
       "text": "Protein powder",
       "done": true
     }
