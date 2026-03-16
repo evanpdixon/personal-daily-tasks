@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evan's Daily Dashboard — March 16, 2026</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        header {
+            text-align: center;
+            padding: 24px 0 16px;
+            border-bottom: 1px solid #21262d;
+            margin-bottom: 24px;
+        }
+        header h1 {
+            color: #e5a00d;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        header .date {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        .progress-bar {
+            background: #161b22;
+            border-radius: 8px;
+            height: 8px;
+            margin: 16px 0 24px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #e5a00d, #f0c040);
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.4s ease;
+        }
+        .progress-label {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #8b949e;
+            margin-bottom: 8px;
+        }
+
+        /* Priority Sections */
+        .priority-section {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .priority-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .priority-header:hover { background: #1c2129; }
+        .priority-header h2 {
+            color: #e5a00d;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+        .priority-header .badge {
+            background: #21262d;
+            color: #8b949e;
+            font-size: 0.75rem;
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+        .priority-header .badge.done {
+            background: #1b4332;
+            color: #52c41a;
+        }
+        .priority-body { padding: 0 18px 16px; }
+
+        /* Task Items */
+        .task {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #21262d;
+        }
+        .task:last-child { border-bottom: none; }
+        .task input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            border: 2px solid #30363d;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            margin-top: 2px;
+            position: relative;
+        }
+        .task input[type="checkbox"]:checked {
+            background: #e5a00d;
+            border-color: #e5a00d;
+        }
+        .task input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: #0d1117;
+            font-size: 14px;
+            font-weight: bold;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .task.checked .task-text { text-decoration: line-through; color: #484f58; }
+        .task-text { flex: 1; font-size: 0.95rem; line-height: 1.5; }
+        .task-text .sub { color: #8b949e; font-size: 0.85rem; display: block; }
+
+        /* Grocery Section */
+        .grocery-list {
+            list-style: none;
+            padding: 0;
+        }
+        .grocery-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #21262d;
+        }
+        .grocery-list li:last-child { border-bottom: none; }
+        .grocery-list li input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px; height: 18px; min-width: 18px;
+            border: 2px solid #30363d;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+        }
+        .grocery-list li input[type="checkbox"]:checked {
+            background: #52c41a;
+            border-color: #52c41a;
+        }
+        .grocery-list li input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: #0d1117;
+            font-size: 12px;
+            font-weight: bold;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .grocery-list li.checked span { text-decoration: line-through; color: #484f58; }
+        .add-item {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .add-item input {
+            flex: 1;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .add-item input:focus { outline: none; border-color: #e5a00d; }
+        .add-item button {
+            background: #e5a00d;
+            color: #0d1117;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .add-item button:hover { background: #f0c040; }
+
+        /* Notes */
+        .notes-area {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            min-height: 80px;
+            resize: vertical;
+        }
+        .notes-area:focus { outline: none; border-color: #e5a00d; }
+
+        /* Time indicator */
+        .time-now {
+            text-align: center;
+            color: #8b949e;
+            font-size: 0.8rem;
+            padding: 12px 0;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #e5a00d;
+            text-decoration: none;
+            font-size: 0.85rem;
+            border: 1px solid #30363d;
+            padding: 6px 14px;
+            border-radius: 6px;
+        }
+        .nav-link:hover { background: #161b22; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            header h1 { font-size: 1.3rem; }
+            .priority-header h2 { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Daily Dashboard</h1>
+            <div class="date">Monday, March 16, 2026</div>
+            <div class="time-now" id="clock"></div>
+            <a href="backlog.html" class="nav-link">View Full Backlog (284 tasks)</a>
+        </header>
+
+        <div class="progress-label"><span id="done-count">0</span> of <span id="total-count">0</span> tasks complete</div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+        <!-- 1. RADIO FILES — PATRICK GREEN -->
+        <div class="priority-section" data-section="patrick">
+            <div class="priority-header" onclick="toggleSection(this)">
+                <h2>Radio Files — Patrick Green</h2>
+                <span class="badge" data-badge="patrick">0/1</span>
+            </div>
+            <div class="priority-body">
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Convert existing radio files for the D578
+                        <span class="sub">Take current files and prep/convert for Patrick's D578 radio</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. BS-50 PRODUCT LISTING -->
+        <div class="priority-section" data-section="bs50">
+            <div class="priority-header" onclick="toggleSection(this)">
+                <h2>Add BS-50 to Website</h2>
+                <span class="badge" data-badge="bs50">0/3</span>
+            </div>
+            <div class="priority-body">
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Create BS-50 product listing on the site
+                        <span class="sub">Product photo, description, pricing — new standalone product page</span>
+                    </div>
+                </div>
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Add BS-50 as add-on for UV Pro via Product Options plugin
+                        <span class="sub">Add to UV Pro product page as a selectable accessory option</span>
+                    </div>
+                </div>
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Add BS-50 as add-on for UV-50 Pro via Product Options plugin
+                        <span class="sub">Add to UV-50 Pro product page as a selectable accessory option</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. RADIO WIZARD (Kit Builder) -->
+        <div class="priority-section" data-section="wizard">
+            <div class="priority-header" onclick="toggleSection(this)">
+                <h2>Radio Wizard — Kit Builder</h2>
+                <span class="badge" data-badge="wizard">0/2</span>
+            </div>
+            <div class="priority-body">
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Continue radio wizard implementation
+                        <span class="sub">Ongoing session — pick up where you left off</span>
+                    </div>
+                </div>
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Identify &amp; knock out low-hanging fruit on RME site
+                        <span class="sub">Quick wins from the site roadmap</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. MARKETING — ERIN -->
+        <div class="priority-section" data-section="marketing">
+            <div class="priority-header" onclick="toggleSection(this)">
+                <h2>Marketing — Connect with Erin</h2>
+                <span class="badge" data-badge="marketing">0/4</span>
+            </div>
+            <div class="priority-body">
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Plan this week's promotion
+                        <span class="sub">Likely a value-add email via Mailchimp — explore angle with Erin</span>
+                    </div>
+                </div>
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Discuss social media assets for the promotion
+                        <span class="sub">Erin creates social assets — align on deliverables</span>
+                    </div>
+                </div>
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Review marketing roadmap together
+                        <span class="sub">Align on upcoming priorities and timeline</span>
+                    </div>
+                </div>
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Prioritize Cheat Sheets — plan new collateral
+                        <span class="sub">Identify which cheat sheets are missing and start creating them</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. GROCERY STORE -->
+        <div class="priority-section" data-section="grocery">
+            <div class="priority-header" onclick="toggleSection(this)">
+                <h2>Grocery Store Trip</h2>
+                <span class="badge" data-badge="grocery">2 items</span>
+            </div>
+            <div class="priority-body">
+                <ul class="grocery-list" id="grocery-list">
+                    <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Ziploc bags</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
+                    <li><input type="checkbox" onchange="toggleGrocery(this)"><span>Protein shakes</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button></li>
+                </ul>
+                <div class="add-item">
+                    <input type="text" id="grocery-input" placeholder="Add item..." onkeydown="if(event.key==='Enter')addGroceryItem()">
+                    <button onclick="addGroceryItem()">Add</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. CONTENT CREATION -->
+        <div class="priority-section" data-section="content">
+            <div class="priority-header" onclick="toggleSection(this)">
+                <h2>Content Creation</h2>
+                <span class="badge" data-badge="content">0/3</span>
+            </div>
+            <div class="priority-body">
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Plan &amp; record "Getting Started in Radio" short-form video
+                        <span class="sub">45-60 sec max (fits YT Shorts, IG Reels, TikTok). Elevator pitch: why radio, what you need, how RME helps. Funnel to site/Zero to Hero. Script &rarr; record &rarr; post to all 3 platforms.</span>
+                    </div>
+                </div>
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Update Zero to Hero Chirp programming tutorial
+                        <span class="sub">Re-record/update the tutorial for current Chirp interface</span>
+                    </div>
+                </div>
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Create written guide / blog post for Chirp programming
+                        <span class="sub">Supplement the video with a written walkthrough — not video-only</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. ADMIN / OTHER -->
+        <div class="priority-section" data-section="admin">
+            <div class="priority-header" onclick="toggleSection(this)">
+                <h2>Administrative Work</h2>
+                <span class="badge" data-badge="admin">0/2</span>
+            </div>
+            <div class="priority-body">
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Check on t-shirt printing
+                        <span class="sub">High priority — check status and handle whatever's needed</span>
+                    </div>
+                </div>
+                <div class="task">
+                    <input type="checkbox" onchange="handleCheck(this)">
+                    <div class="task-text">
+                        Catch up on any remaining admin tasks
+                        <span class="sub">Email, invoices, order follow-ups, etc.</span>
+                    </div>
+                </div>
+                <div class="notes-area" placeholder="Notes — jot anything down here..." contenteditable="false"></div>
+                <textarea class="notes-area" placeholder="Notes — jot anything down here..." id="admin-notes" oninput="saveState()"></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ─── State persistence via localStorage ───
+        const STORAGE_KEY = 'rme-daily-2026-03-16';
+
+        function saveState() {
+            const checks = [...document.querySelectorAll('.task input[type="checkbox"]')].map(c => c.checked);
+            const groceryItems = [...document.querySelectorAll('#grocery-list li')].map(li => ({
+                text: li.querySelector('span').textContent,
+                checked: li.querySelector('input').checked
+            }));
+            const notes = document.getElementById('admin-notes').value;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ checks, groceryItems, notes }));
+            updateProgress();
+        }
+
+        function loadState() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            try {
+                const state = JSON.parse(raw);
+                const checkboxes = document.querySelectorAll('.task input[type="checkbox"]');
+                state.checks.forEach((val, i) => {
+                    if (checkboxes[i]) {
+                        checkboxes[i].checked = val;
+                        if (val) checkboxes[i].closest('.task').classList.add('checked');
+                    }
+                });
+                if (state.groceryItems) {
+                    document.getElementById('grocery-list').innerHTML = '';
+                    state.groceryItems.forEach(item => {
+                        addGroceryItemDirect(item.text, item.checked);
+                    });
+                }
+                if (state.notes) {
+                    document.getElementById('admin-notes').value = state.notes;
+                }
+            } catch(e) {}
+            updateProgress();
+        }
+
+        // ─── Task checking ───
+        function handleCheck(el) {
+            const task = el.closest('.task');
+            if (el.checked) task.classList.add('checked');
+            else task.classList.remove('checked');
+            saveState();
+        }
+
+        // ─── Grocery list ───
+        function addGroceryItem() {
+            const input = document.getElementById('grocery-input');
+            const text = input.value.trim();
+            if (!text) return;
+            addGroceryItemDirect(text, false);
+            input.value = '';
+            saveState();
+        }
+
+        function addGroceryItemDirect(text, checked) {
+            const list = document.getElementById('grocery-list');
+            const li = document.createElement('li');
+            if (checked) li.classList.add('checked');
+            li.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleGrocery(this)"><span>${escapeHtml(text)}</span><button style="margin-left:auto;background:none;border:none;color:#484f58;cursor:pointer;font-size:1.1rem;" onclick="removeGrocery(this)" title="Remove">&times;</button>`;
+            list.appendChild(li);
+            updateGroceryBadge();
+        }
+
+        function toggleGrocery(el) {
+            const li = el.closest('li');
+            if (el.checked) li.classList.add('checked');
+            else li.classList.remove('checked');
+            saveState();
+        }
+
+        function removeGrocery(el) {
+            el.closest('li').remove();
+            saveState();
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ─── Section toggle ───
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            body.style.display = body.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // ─── Progress ───
+        function updateProgress() {
+            const all = document.querySelectorAll('.task input[type="checkbox"]');
+            const checked = [...all].filter(c => c.checked).length;
+            const total = all.length;
+            document.getElementById('done-count').textContent = checked;
+            document.getElementById('total-count').textContent = total;
+            const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+            document.getElementById('progress-fill').style.width = pct + '%';
+
+            // Update section badges
+            document.querySelectorAll('.priority-section').forEach(section => {
+                const name = section.dataset.section;
+                if (name === 'grocery') {
+                    updateGroceryBadge();
+                    return;
+                }
+                const tasks = section.querySelectorAll('.task input[type="checkbox"]');
+                const done = [...tasks].filter(c => c.checked).length;
+                const badge = section.querySelector('.badge');
+                badge.textContent = `${done}/${tasks.length}`;
+                if (done === tasks.length && tasks.length > 0) badge.classList.add('done');
+                else badge.classList.remove('done');
+            });
+        }
+
+        function updateGroceryBadge() {
+            const items = document.querySelectorAll('#grocery-list li');
+            const badge = document.querySelector('[data-badge="grocery"]');
+            badge.textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+        }
+
+        // ─── Clock ───
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ─── Init ───
+        loadState();
+
+        // Remove the contenteditable div (artifact)
+        const ceDiv = document.querySelector('.notes-area[contenteditable]');
+        if (ceDiv) ceDiv.remove();
+    </script>
+</body>
+</html>
