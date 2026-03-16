@@ -13,17 +13,6 @@
       ]
     },
     {
-      "id": "uvpro",
-      "title": "UV Pro App Research",
-      "tasks": [
-        {
-          "text": "Research UVPRO Windows/Android app",
-          "sub": "Evaluate available apps, compatibility, features, and integration options",
-          "done": false
-        }
-      ]
-    },
-    {
       "id": "bs50",
       "title": "Add BS-50 to Website",
       "tasks": [
@@ -173,6 +162,14 @@
   "grocery": [],
   "notes": "",
   "backlog": [
+    {
+      "id": "bt-1773699996183",
+      "title": "Research UVPRO Windows/Android app",
+      "detail": "Evaluate available apps, compatibility, features, and integration options",
+      "priority": "medium",
+      "category": "UV Pro App Research",
+      "source": "daily"
+    },
     {
       "id": "c2",
       "title": "Add contact info to header & footer",
