@@ -27,8 +27,8 @@
   </Settings>
   <Actions>
     <Exec>
-      <Command>cmd</Command>
-      <Arguments>/c "set NTFY_TOPIC=rme-tasks-e2ad4389abf7d84d&amp;&amp; pythonw C:\Claude\personal-daily-tasks\listener.py"</Arguments>
+      <Command>wscript.exe</Command>
+      <Arguments>C:\Claude\personal-daily-tasks\run_listener.vbs</Arguments>
       <WorkingDirectory>C:\Claude\personal-daily-tasks</WorkingDirectory>
     </Exec>
   </Actions>

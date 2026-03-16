@@ -8,6 +8,11 @@ __pycache__/
 *.pyc
 listener.log
 
+# Secrets (contain ntfy topic)
+run_listener.vbs
+run_listener.bat
+RMETaskListener.xml
+
 # IDE/Editor
 .vscode/
 .idea/
