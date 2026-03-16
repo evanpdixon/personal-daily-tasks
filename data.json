@@ -170,12 +170,7 @@
       ]
     }
   ],
-  "grocery": [
-    {
-      "text": "Protein powder",
-      "done": true
-    }
-  ],
+  "grocery": [],
   "notes": "",
   "backlog": [
     {
