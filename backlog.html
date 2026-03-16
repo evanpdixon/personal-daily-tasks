@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RME Master Backlog — All Tasks</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        header {
+            text-align: center;
+            padding: 24px 0 16px;
+            border-bottom: 1px solid #21262d;
+            margin-bottom: 20px;
+        }
+        header h1 { color: #e5a00d; font-size: 1.6rem; font-weight: 700; }
+        header .sub { color: #8b949e; font-size: 0.9rem; margin-top: 4px; }
+        .nav-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #e5a00d;
+            text-decoration: none;
+            font-size: 0.85rem;
+            border: 1px solid #30363d;
+            padding: 6px 14px;
+            border-radius: 6px;
+        }
+        .nav-link:hover { background: #161b22; }
+
+        /* Controls bar */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .controls input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .controls input:focus { outline: none; border-color: #e5a00d; }
+        .controls select {
+            background: #161b22;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        .controls select:focus { outline: none; border-color: #e5a00d; }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #21262d;
+        }
+        .tab {
+            padding: 10px 18px;
+            cursor: pointer;
+            color: #8b949e;
+            font-size: 0.9rem;
+            border-bottom: 2px solid transparent;
+            user-select: none;
+        }
+        .tab:hover { color: #c9d1d9; }
+        .tab.active { color: #e5a00d; border-bottom-color: #e5a00d; }
+        .tab .count {
+            background: #21262d;
+            color: #8b949e;
+            font-size: 0.7rem;
+            padding: 1px 7px;
+            border-radius: 10px;
+            margin-left: 6px;
+        }
+
+        /* Stats bar */
+        .stats {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 8px;
+            padding: 12px 18px;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        .stat-card .num { color: #e5a00d; font-size: 1.4rem; font-weight: 700; }
+        .stat-card .label { color: #8b949e; font-size: 0.75rem; margin-top: 2px; }
+
+        /* Phase sections */
+        .phase-section {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .phase-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .phase-header:hover { background: #1c2129; }
+        .phase-header h3 { color: #e5a00d; font-size: 0.95rem; font-weight: 600; }
+        .phase-header .badge {
+            background: #21262d;
+            color: #8b949e;
+            font-size: 0.72rem;
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+        .phase-body { padding: 0 16px 12px; }
+
+        /* Task rows */
+        .task-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 7px 0;
+            border-bottom: 1px solid #21262d;
+            font-size: 0.88rem;
+        }
+        .task-row:last-child { border-bottom: none; }
+        .task-row .priority-dot {
+            width: 8px; height: 8px; min-width: 8px;
+            border-radius: 50%;
+            margin-top: 6px;
+        }
+        .priority-dot.high { background: #f85149; }
+        .priority-dot.medium { background: #d29922; }
+        .priority-dot.low { background: #388bfd; }
+        .task-row .task-title { flex: 1; line-height: 1.4; }
+        .task-row .task-detail { color: #8b949e; font-size: 0.8rem; display: block; }
+        .task-row .tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+        .task-row .tag {
+            background: #21262d;
+            color: #8b949e;
+            font-size: 0.65rem;
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+        .task-row .effort {
+            color: #8b949e;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            margin-top: 3px;
+        }
+
+        /* Hidden */
+        .hidden { display: none !important; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .controls { flex-direction: column; }
+            .stats { flex-direction: column; }
+            .tab { padding: 8px 12px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Master Backlog</h1>
+            <div class="sub">All tasks aggregated from RME Roadmap, Personal Dashboard &amp; Daily Lists</div>
+            <a href="daily.html" class="nav-link">Back to Today's Dashboard</a>
+        </header>
+
+        <div class="stats" id="stats">
+            <div class="stat-card"><div class="num" id="stat-total">0</div><div class="label">Total Tasks</div></div>
+            <div class="stat-card"><div class="num" id="stat-high">0</div><div class="label">High Priority</div></div>
+            <div class="stat-card"><div class="num" id="stat-medium">0</div><div class="label">Medium Priority</div></div>
+            <div class="stat-card"><div class="num" id="stat-low">0</div><div class="label">Low Priority</div></div>
+        </div>
+
+        <div class="tabs" id="tabs">
+            <div class="tab active" data-source="all" onclick="setSource(this)">All<span class="count" id="count-all"></span></div>
+            <div class="tab" data-source="roadmap" onclick="setSource(this)">Site Roadmap<span class="count" id="count-roadmap"></span></div>
+            <div class="tab" data-source="dashboard" onclick="setSource(this)">Dashboard Todos<span class="count" id="count-dashboard"></span></div>
+        </div>
+
+        <div class="controls">
+            <input type="text" id="search" placeholder="Search tasks..." oninput="render()">
+            <select id="priority-filter" onchange="render()">
+                <option value="all">All Priorities</option>
+                <option value="high">High Only</option>
+                <option value="medium">Medium Only</option>
+                <option value="low">Low Only</option>
+            </select>
+            <select id="category-filter" onchange="render()">
+                <option value="all">All Categories</option>
+            </select>
+        </div>
+
+        <div id="task-list"></div>
+    </div>
+
+<script>
+// ════════════════════════════════════════════
+// DATA — Roadmap Tasks (from RME-Site-Roadmap)
+// ════════════════════════════════════════════
+const roadmapTasks = [
+    // Phase 1: Critical Fixes
+    { id:'c1', title:'Fix /shop/ 404 error', detail:'WooCommerce Settings > Advanced > Page Setup — actively turning away buyers', priority:'high', phase:'Phase 1: Critical Fixes', tags:['technical'], effort:'30 min', source:'roadmap' },
+    { id:'c2', title:'Add contact info to header & footer', detail:'Phone, email, business hours — trust signal that increases conversion', priority:'high', phase:'Phase 1: Critical Fixes', tags:['design','conversion'], effort:'1 hr', source:'roadmap' },
+    { id:'c3', title:'Add shipping & returns info to product pages', detail:'Create policy page + add tab to products — reduces cart abandonment', priority:'high', phase:'Phase 1: Critical Fixes', tags:['conversion'], effort:'2 hrs', source:'roadmap' },
+    { id:'c4', title:'Fix homepage title tag', detail:'Change from "Home - Radio Made Easy" to keyword-rich title in Yoast', priority:'high', phase:'Phase 1: Critical Fixes', tags:['seo'], effort:'10 min', source:'roadmap' },
+    { id:'c5', title:'Re-record Chirp programming tutorial for Zero to Hero', detail:'Current tutorial is outdated — record new version covering latest Chirp interface', priority:'high', phase:'Phase 1: Critical Fixes', tags:['content'], effort:'2-3 hrs', source:'roadmap' },
+
+    // Phase 2: Email Monetization
+    { id:'em1', title:'Audit & optimize Mailchimp integration', detail:'Review WooCommerce sync, segments, abandoned cart flow', priority:'medium', phase:'Phase 2: Email Monetization', tags:['email','technical'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'em2', title:'Build post-purchase follow-up sequence', detail:'Day 1 confirmation, Day 7 tips, Day 14 review request, Day 30 check-in', priority:'medium', phase:'Phase 2: Email Monetization', tags:['email','conversion'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'em3', title:'Build accessory upsell sequences by radio model', detail:'Segment by purchased radio, send targeted accessory upsells', priority:'medium', phase:'Phase 2: Email Monetization', tags:['email','conversion'], effort:'6-8 hrs', source:'roadmap' },
+    { id:'em4', title:'Build welcome sequence for new subscribers', detail:'Brand intro, GMRS guide, first-purchase discount, training overview', priority:'medium', phase:'Phase 2: Email Monetization', tags:['email','content'], effort:'3-4 hrs', source:'roadmap' },
+    { id:'em5', title:'Build training promotion sequences', detail:'Automated emails to product buyers promoting relevant courses', priority:'medium', phase:'Phase 2: Email Monetization', tags:['email','conversion'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'em6', title:'Win-back sequence for lapsed customers', detail:'Trigger for 90+ day inactive — exclusive return discount', priority:'medium', phase:'Phase 2: Email Monetization', tags:['email','conversion'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'em7', title:'Monthly newsletter template', detail:'New products, training dates, blog recap, radio tips', priority:'medium', phase:'Phase 2: Email Monetization', tags:['email','content'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'em8', title:'Set up SMS channel — early access & exclusive deals', detail:'Activate SMS marketing, flash sales, restock alerts, training notices', priority:'medium', phase:'Phase 2: Email Monetization', tags:['email','conversion'], effort:'4-6 hrs', source:'roadmap' },
+
+    // Phase 3: Shipping Operations
+    { id:'sh1', title:'Export product catalog & batch-fill weights/dimensions', detail:'CSV export, add weight+dimensions for ~150 products, re-import', priority:'medium', phase:'Phase 3: Shipping Operations', tags:['technical'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'sh2', title:'Configure Pirate Ship live rates at checkout', detail:'Replace flat-rate $5/$10/$14 tiers with real-time USPS/UPS rates', priority:'medium', phase:'Phase 3: Shipping Operations', tags:['technical','conversion'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'sh3', title:'Configure box/package sizes in Pirate Ship', detail:'Define 4-6 standard box sizes for optimal packing logic', priority:'medium', phase:'Phase 3: Shipping Operations', tags:['technical'], effort:'1-2 hrs', source:'roadmap' },
+    { id:'sh4', title:'Set up shipping insurance option at checkout', detail:'Optional insurance checkbox with calculated cost', priority:'medium', phase:'Phase 3: Shipping Operations', tags:['conversion'], effort:'1 hr', source:'roadmap' },
+    { id:'sh5', title:'Configure international shipping zones', detail:'Domestic, Canada, International zones with USPS/UPS via Pirate Ship', priority:'medium', phase:'Phase 3: Shipping Operations', tags:['technical','conversion'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'sh6', title:'Remove flat-rate shipping & test end-to-end', detail:'Once live rates work — test domestic, Canadian, international, admin orders', priority:'medium', phase:'Phase 3: Shipping Operations', tags:['technical','conversion'], effort:'2-3 hrs', source:'roadmap' },
+
+    // Phase 4: Conversion Optimization
+    { id:'cv1', title:'Rewrite top-seller product descriptions', detail:'BNC Molly, BNC Adapter, UV Pro Essentials, Foul Weather Whip — 300-500 words each', priority:'medium', phase:'Phase 4: Conversion Optimization', tags:['content','conversion'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'cv2', title:'Enable & seed product reviews', detail:'Enable reviews, post-purchase email request, reach out to repeat customers', priority:'medium', phase:'Phase 4: Conversion Optimization', tags:['conversion','seo'], effort:'2 hrs', source:'roadmap' },
+    { id:'cv3', title:'Implement cross-sells & upsells on all radio products', detail:'WooCommerce cross-sells + Frequently Bought Together plugin', priority:'medium', phase:'Phase 4: Conversion Optimization', tags:['conversion'], effort:'3-4 hrs', source:'roadmap' },
+    { id:'cv4', title:'Embed YouTube videos on product pages', detail:'Match YouTube channel videos to products and embed', priority:'medium', phase:'Phase 4: Conversion Optimization', tags:['conversion','content'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'cv5', title:'Write meta descriptions for all key pages', detail:'16 pages, top 20 products, 27 category pages — unique, keyword-rich', priority:'medium', phase:'Phase 4: Conversion Optimization', tags:['seo'], effort:'3-4 hrs', source:'roadmap' },
+    { id:'cv6', title:'Rewrite remaining product descriptions', detail:'Expand ~150 products from 1-2 sentences to 200-400 words', priority:'low', phase:'Phase 4: Conversion Optimization', tags:['content','conversion'], effort:'20-30 hrs', source:'roadmap' },
+    { id:'cv7', title:'Create training course landing pages', detail:'Zero to Hero, Tactical Radio Operator, Urban Exodus — full landing pages', priority:'medium', phase:'Phase 4: Conversion Optimization', tags:['conversion','content'], effort:'8-12 hrs', source:'roadmap' },
+
+    // Phase 5: Inventory & Bundle System
+    { id:'inv1', title:'Build product bundle system (kits decompose to components)', detail:'Custom WC plugin: kits as single products that decompose to line items in cart', priority:'medium', phase:'Phase 5: Inventory & Bundles', tags:['technical','conversion'], effort:'10-14 hrs', source:'roadmap' },
+    { id:'inv2', title:'Migrate existing kit products to bundle system', detail:'Convert UV Pro Essentials, SDR Essentials, VX-6R, UV-5R, Field Exp, Tactician', priority:'medium', phase:'Phase 5: Inventory & Bundles', tags:['technical'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'inv3', title:'Configure inventory thresholds & reorder alerts', detail:'Low-stock thresholds, enable backorders, email alerts', priority:'medium', phase:'Phase 5: Inventory & Bundles', tags:['technical'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'inv4', title:'Add cost tracking & margin monitoring per product', detail:'COGS field, auto margin calc, dashboard sorted by margin %', priority:'low', phase:'Phase 5: Inventory & Bundles', tags:['technical'], effort:'8-12 hrs', source:'roadmap' },
+    { id:'inv5', title:'Build vendor/product sourcing tracker', detail:'Per-product vendor info, cost, markup, margin dashboard', priority:'low', phase:'Phase 5: Inventory & Bundles', tags:['technical'], effort:'12-16 hrs', source:'roadmap' },
+    { id:'inv6', title:'Migrate off Product Options plugin', detail:'Once bundles live — disable Product Options, audit inventory, true-up stock', priority:'low', phase:'Phase 5: Inventory & Bundles', tags:['technical'], effort:'3-4 hrs', source:'roadmap' },
+
+    // Phase 6: Kit Builder Wizard
+    { id:'wz1', title:'Design data model & compatibility system', detail:'Radio > accessory mapping, admin UI, step flow definition', priority:'medium', phase:'Phase 6: Kit Builder Wizard', tags:['technical','platform'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'wz2', title:'Build wizard frontend (customer-facing)', detail:'Multi-step form, progress indicator, running total, mobile-first', priority:'medium', phase:'Phase 6: Kit Builder Wizard', tags:['technical','design'], effort:'12-16 hrs', source:'roadmap' },
+    { id:'wz3', title:'Build admin-side kit builder (for phone/consultation orders)', detail:'Mirror customer wizard in WC admin order creation', priority:'medium', phase:'Phase 6: Kit Builder Wizard', tags:['technical'], effort:'8-10 hrs', source:'roadmap' },
+    { id:'wz4', title:'Build cart & inventory integration', detail:'Each accessory as real WC line item, proper inventory, backorders', priority:'medium', phase:'Phase 6: Kit Builder Wizard', tags:['technical','conversion'], effort:'8-10 hrs', source:'roadmap' },
+    { id:'wz5', title:'Build programming preferences collector', detail:'Frequencies, region, use case, channel plan — stored as order meta', priority:'medium', phase:'Phase 6: Kit Builder Wizard', tags:['technical','conversion'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'wz6', title:'Build admin compatibility rules interface', detail:'WordPress admin page, drag-and-drop, recommended badges', priority:'medium', phase:'Phase 6: Kit Builder Wizard', tags:['technical'], effort:'6-8 hrs', source:'roadmap' },
+    { id:'wz7', title:'Populate compatibility data for all radio models', detail:'Map accessories to UV-5R, UV-Pro, VX-6R, DMR 6x2 Pro, UV-50Pro, G90, FT-891, D578', priority:'medium', phase:'Phase 6: Kit Builder Wizard', tags:['content','technical'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'wz8', title:'Testing & launch', detail:'End-to-end QA: customer wizard, admin builder, cart, inventory, mobile', priority:'medium', phase:'Phase 6: Kit Builder Wizard', tags:['technical'], effort:'4-6 hrs', source:'roadmap' },
+
+    // Phase 7: Rental Service
+    { id:'rs1', title:'Define RaaS program structure & pricing', detail:'Rental tiers, pricing, deposit/damage policy, breakeven calc', priority:'low', phase:'Phase 7: Rental Service (RaaS)', tags:['growth'], effort:'3-4 hrs', source:'roadmap' },
+    { id:'rs2', title:'Build rental inventory & tracking system', detail:'Serial number tracking, return dates, condition notes, maintenance', priority:'low', phase:'Phase 7: Rental Service (RaaS)', tags:['technical','growth'], effort:'8-12 hrs', source:'roadmap' },
+    { id:'rs3', title:'Build RaaS landing page', detail:'Target: event security, film, corporate, festivals — online booking', priority:'low', phase:'Phase 7: Rental Service (RaaS)', tags:['growth','content'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'rs4', title:'Create rental agreement & checkout flow', detail:'Digital agreement, liability, deposit handling', priority:'low', phase:'Phase 7: Rental Service (RaaS)', tags:['technical','growth'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'rs5', title:'Set up rental fulfillment workflow', detail:'Receive > program > ship > event > return > inspect > restock', priority:'low', phase:'Phase 7: Rental Service (RaaS)', tags:['technical'], effort:'3-4 hrs', source:'roadmap' },
+    { id:'rs6', title:'Launch RaaS with promotional campaign', detail:'Website, YouTube, social, Mailchimp, intro pricing, Google Ads', priority:'low', phase:'Phase 7: Rental Service (RaaS)', tags:['growth','email'], effort:'4-6 hrs', source:'roadmap' },
+
+    // Phase 8: SEO & Content
+    { id:'seo1', title:'Blog: How to Program a Baofeng UV-5R', detail:'Target: "program baofeng uv-5r" — highest search volume in niche', priority:'medium', phase:'Phase 8: SEO & Content', tags:['content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'seo2', title:'Blog: GMRS vs Ham Radio — Which License?', detail:'Target: "gmrs vs ham radio" — evergreen comparison', priority:'medium', phase:'Phase 8: SEO & Content', tags:['content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'seo3', title:'Blog: Best GMRS Radio Setup for Overlanding', detail:'Target: "gmrs radio overlanding" — vehicle kits, antennas', priority:'low', phase:'Phase 8: SEO & Content', tags:['content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'seo4', title:'Expand GMRS Guide into comprehensive resource', detail:'Expand to 3,000+ words — definitive GMRS resource', priority:'medium', phase:'Phase 8: SEO & Content', tags:['content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'seo5', title:'Blog: How to Install a Mobile Radio', detail:'Target: "mobile radio install" — drives service revenue', priority:'low', phase:'Phase 8: SEO & Content', tags:['content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'seo6', title:'Blog: Two-Way Radio Buyer\'s Guide for Beginners', detail:'Target: "two way radio guide" — comparison of types, licensing', priority:'low', phase:'Phase 8: SEO & Content', tags:['content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'seo7', title:'Blog: Emergency Communications Planning', detail:'Target: "emergency communications plan" — CERT/prepper market', priority:'low', phase:'Phase 8: SEO & Content', tags:['content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'seo8', title:'Blog: HF Radio for Beginners', detail:'Target: "hf radio beginner" — link to HF kits', priority:'low', phase:'Phase 8: SEO & Content', tags:['content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'seo9', title:'Optimize all 27 category pages', detail:'Add 200-400 words descriptive content + meta titles/descriptions', priority:'low', phase:'Phase 8: SEO & Content', tags:['seo','content'], effort:'6-8 hrs', source:'roadmap' },
+    { id:'seo10', title:'Add alt text to all product images', detail:'Descriptive alt text for image search and accessibility', priority:'low', phase:'Phase 8: SEO & Content', tags:['seo','technical'], effort:'3-4 hrs', source:'roadmap' },
+
+    // Phase 9: Vertical Expansion
+    { id:'mk1', title:'Research & prioritize target verticals', detail:'Event security, church, golf, restaurants, overlanding, construction, film, CERT', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mk2', title:'Landing page: Event Security Radio Solutions', detail:'Target event security teams — SEO: "event security radios"', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth','content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mk3', title:'Landing page: Church Security & Media Production', detail:'Security: discreet earpieces. Media: crew coordination, multi-building', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth','content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mk4', title:'Landing page: Business & Commercial Radio Solutions', detail:'Golf courses, restaurants, hotels, warehouses — licensing help', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth','content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mk5', title:'Landing page: Overlanding & Off-Road Radio Setup', detail:'Vehicle install kits, mobile GMRS, antenna mounts — lifestyle', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth','content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mk6', title:'Landing page: Construction & Job Site Radios', detail:'Rugged radios, multi-gang chargers, repeater solutions, OSHA', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth','content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mk7', title:'Landing page: Film & Video Production Comms', detail:'Production crews, discreet earpieces, rental option', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth','content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mk8', title:'Landing page: Emergency Preparedness & CERT Teams', detail:'CERT, preppers, neighborhood groups — training + radio kits', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth','content','seo'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mk9', title:'Create business/bulk inquiry form', detail:'Org type, quantity, use case, timeline, budget — routes to Evan', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth','conversion'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'mk10', title:'Build vertical-targeted Mailchimp & SMS campaigns', detail:'Per-vertical email + SMS campaigns with relevant products', priority:'low', phase:'Phase 9: Vertical Expansion', tags:['growth','email'], effort:'4-6 hrs', source:'roadmap' },
+
+    // Phase 10: Vendor Optimization
+    { id:'vn1', title:'Build drop ship management system', detail:'Flag products as drop ship, vendor email templates, batch aggregator', priority:'low', phase:'Phase 10: Vendor Optimization', tags:['technical'], effort:'16-20 hrs', source:'roadmap' },
+    { id:'vn2', title:'Build coax cable builder wizard', detail:'Cable type, length, connectors A/B, live pricing, auto drop ship', priority:'low', phase:'Phase 10: Vendor Optimization', tags:['technical','conversion'], effort:'12-16 hrs', source:'roadmap' },
+    { id:'vn3', title:'Build competitor price monitoring tool', detail:'Per-product competitor URLs, price scraping, undercut alerts', priority:'low', phase:'Phase 10: Vendor Optimization', tags:['technical'], effort:'10-14 hrs', source:'roadmap' },
+    { id:'vn4', title:'Vendor product catalog expansion', detail:'High-demand products from existing vendors not yet listed', priority:'low', phase:'Phase 10: Vendor Optimization', tags:['content','growth'], effort:'8-12 hrs', source:'roadmap' },
+    { id:'vn5', title:'Competitive pricing analysis & repricing strategy', detail:'Match on commodity, premium on value-add, document strategy', priority:'low', phase:'Phase 10: Vendor Optimization', tags:['growth'], effort:'4-6 hrs', source:'roadmap' },
+
+    // Phase 11: Infrastructure
+    { id:'inf1', title:'Optimize images & page speed', detail:'Resize logo, SG Optimizer, WebP, lazy loading, CDN — target mobile PageSpeed 60+', priority:'medium', phase:'Phase 11: Infrastructure', tags:['technical'], effort:'3-4 hrs', source:'roadmap' },
+    { id:'inf2', title:'Enhance product schema markup', detail:'Verify Product schema, FAQ schema, Rich Results Test', priority:'low', phase:'Phase 11: Infrastructure', tags:['seo','technical'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'inf3', title:'Optimize Google Business Profile', detail:'Claim/optimize, add service areas, post updates, reviews', priority:'low', phase:'Phase 11: Infrastructure', tags:['seo'], effort:'2 hrs', source:'roadmap' },
+    { id:'inf4', title:'Security & maintenance audit', detail:'Updates, 2FA, backups, limit login attempts, remove unused plugins', priority:'medium', phase:'Phase 11: Infrastructure', tags:['technical'], effort:'2-3 hrs', source:'roadmap' },
+    { id:'inf5', title:'Build product label printer (2x1 labels with QR code)', detail:'Generate labels from any product page, DYMO/Zebra compatible', priority:'low', phase:'Phase 11: Infrastructure', tags:['technical'], effort:'6-8 hrs', source:'roadmap' },
+    { id:'inf6', title:'Activate Google Analytics & Meta Pixel reporting', detail:'GA4 ecommerce tracking, Meta custom audiences, weekly dashboard', priority:'medium', phase:'Phase 11: Infrastructure', tags:['technical'], effort:'3-4 hrs', source:'roadmap' },
+
+    // Phase 12: Membership
+    { id:'mb1', title:'Define membership tier structure & pricing', detail:'Content tiers, monthly/annual, member discounts, Q&A frequency', priority:'low', phase:'Phase 12: Membership Platform', tags:['platform','conversion'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mb2', title:'Evaluate LearnDash vs alternatives for on-site LMS', detail:'Compare LearnDash, LifterLMS, Tutor LMS — self-hosted priority', priority:'low', phase:'Phase 12: Membership Platform', tags:['platform'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mb3', title:'Set up WooCommerce Subscriptions for recurring billing', detail:'Monthly/annual plans, role-based pricing, payment gateway support', priority:'low', phase:'Phase 12: Membership Platform', tags:['platform','technical'], effort:'4-6 hrs', source:'roadmap' },
+    { id:'mb4', title:'Build premium content library (initial 5-10 lessons)', detail:'Record or repurpose YouTube content as structured courses', priority:'low', phase:'Phase 12: Membership Platform', tags:['content','platform'], effort:'20-30 hrs', source:'roadmap' },
+    { id:'mb5', title:'Set up live Q&A infrastructure', detail:'Monthly members-only stream, recording archive', priority:'low', phase:'Phase 12: Membership Platform', tags:['platform','technical'], effort:'3-4 hrs', source:'roadmap' },
+    { id:'mb6', title:'Build member dashboard & gated content', detail:'Course progress, Q&A dates, discount code, content library', priority:'low', phase:'Phase 12: Membership Platform', tags:['platform','design'], effort:'6-8 hrs', source:'roadmap' },
+    { id:'mb7', title:'Launch membership with founding member promotion', detail:'Soft launch to 9K email list, founding member pricing', priority:'low', phase:'Phase 12: Membership Platform', tags:['email','conversion'], effort:'4-6 hrs', source:'roadmap' },
+
+    // Phase 13: Theme Migration
+    { id:'th1', title:'Evaluate & select Kadence theme', detail:'Lightweight, global colors, native WC integration, block-based', priority:'low', phase:'Phase 13: Theme Migration', tags:['design','technical'], effort:'3-4 hrs', source:'roadmap' },
+    { id:'th2', title:'Set up staging site & configure Kadence', detail:'SiteGround staging, install Kadence, configure black/yellow brand', priority:'low', phase:'Phase 13: Theme Migration', tags:['design','technical'], effort:'6-8 hrs', source:'roadmap' },
+    { id:'th3', title:'Rebuild key pages in Kadence', detail:'Homepage, about, contact, training, GMRS guide — dark theme', priority:'low', phase:'Phase 13: Theme Migration', tags:['design','content'], effort:'12-16 hrs', source:'roadmap' },
+    { id:'th4', title:'Test, QA, and go live', detail:'Full QA, redirects, Yoast data, speed test, deactivate Divi', priority:'low', phase:'Phase 13: Theme Migration', tags:['technical'], effort:'4-6 hrs', source:'roadmap' },
+
+    // Phase 14: Ongoing
+    { id:'og1', title:'Content cadence: 2-4 blog posts/month', detail:'60% educational, 30% product, 10% news — repurpose YouTube', priority:'low', phase:'Phase 14: Ongoing Operations', tags:['content','seo'], effort:'Ongoing', source:'roadmap' },
+    { id:'og2', title:'Monthly email newsletter + SMS blast', detail:'New products, training, blog recap, tips — use Mailchimp template', priority:'low', phase:'Phase 14: Ongoing Operations', tags:['email','content'], effort:'Ongoing', source:'roadmap' },
+    { id:'og3', title:'Monthly live Q&A for members', detail:'Recurring stream, archive recordings, collect questions in advance', priority:'low', phase:'Phase 14: Ongoing Operations', tags:['platform','content'], effort:'Ongoing', source:'roadmap' },
+    { id:'og4', title:'Expand premium content library', detail:'1-2 new lessons/month, advanced topics, guest instructors', priority:'low', phase:'Phase 14: Ongoing Operations', tags:['content','platform'], effort:'Ongoing', source:'roadmap' },
+    { id:'og5', title:'Monitor & optimize conversion funnel', detail:'Kit builder completion, cart abandonment, email rates, A/B tests', priority:'low', phase:'Phase 14: Ongoing Operations', tags:['conversion','technical'], effort:'Ongoing', source:'roadmap' },
+];
+
+// ════════════════════════════════════════════
+// DATA — Personal Dashboard Tasks
+// ════════════════════════════════════════════
+const dashboardTasks = [
+    // Orders
+    { id:'d1', title:'Complete programming for DA7X2 orders', priority:'high', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d2', title:'Phillip PDF', priority:'high', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d3', title:'Adam Healy boxes', priority:'high', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d4', title:'8808 — DMR6X2 Special Order', priority:'medium', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d5', title:'8902 — Patrick Greene', priority:'medium', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d6', title:'9146 — Andy Miller 6x UVPRO 2x UV50PRO', priority:'medium', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d7', title:'Brett Bracken files', priority:'medium', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d8', title:'Debbie Block', priority:'medium', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d9', title:'Jim Maragoni', priority:'medium', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d10', title:'Erich Wennberg', priority:'medium', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d11', title:'GLI', priority:'medium', category:'Orders', tags:['orders'], source:'dashboard' },
+    { id:'d12', title:'Cheat sheet for Dave Levy', priority:'medium', category:'Orders', tags:['orders'], source:'dashboard' },
+
+    // Class Planning
+    { id:'d13', title:'Contact single Jackson OH TRO registrant — offer transfer to Stoneboro PA', priority:'high', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d14', title:'Cancel Jackson OH TRO course listing once registrant is handled', priority:'high', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d15', title:'Send Ohio class follow-up email', priority:'high', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d16', title:'Plan tactical radio operator classes: Stoneboro PA, Spiro OK, Stony Point NC', priority:'high', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d17', title:'Stoneboro PA — exercise planning, role-play design, resources', priority:'high', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d18', title:'Spiro OK — exercise planning', priority:'high', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d19', title:'Stony Point NC — exercise planning', priority:'high', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d20', title:'Foam earpieces for Berwick', priority:'medium', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d21', title:'Invites to ZTH Stony Point', priority:'medium', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d22', title:'Asheville class follow-up — Bill Parravano', priority:'medium', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d23', title:'Oklahoma guy follow-up', priority:'medium', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d24', title:'Houston class follow-up', priority:'medium', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d25', title:'Louisiana class follow-up', priority:'medium', category:'Class Planning', tags:['class'], source:'dashboard' },
+    { id:'d26', title:'Prometheus Tactical Ivan — book June-August', priority:'medium', category:'Class Planning', tags:['class'], source:'dashboard' },
+
+    // Radio Projects
+    { id:'d27', title:'Home HF station setup — antenna install, get wife operational for voice comms', priority:'high', category:'Radio Projects', tags:['radio'], source:'dashboard' },
+    { id:'d28', title:'VHF mobile radio install — vehicle-based option accessible to wife', priority:'high', category:'Radio Projects', tags:['radio'], source:'dashboard' },
+    { id:'d29', title:'Square away portable HF kit for travel — verify JS8Call and APRS', priority:'high', category:'Radio Projects', tags:['radio'], source:'dashboard' },
+    { id:'d30', title:'Test full comms chain before Thursday departure', priority:'high', category:'Radio Projects', tags:['radio'], source:'dashboard' },
+
+    // Personal
+    { id:'d31', title:'Make arrangements with Jon Dillon\'s son to cut grass while out of town', priority:'high', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d32', title:'Install generator inlet and interlock', priority:'medium', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d33', title:'Assemble and install server rack in master closet', priority:'medium', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d34', title:'Install security cameras', priority:'medium', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d35', title:'Champion generator — battery and pull cord', priority:'medium', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d36', title:'Install antenna at house', priority:'medium', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d37', title:'Mailbox', priority:'low', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d38', title:'Install toilet paper holder — master bathroom', priority:'low', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d39', title:'Remove laundry cabinet install laundry backsplash and shelves', priority:'low', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d40', title:'Kitchen peninsula cabinets — backer panel', priority:'low', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d41', title:'Trench house to wellhouse generator inlet on wellhouse', priority:'low', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d42', title:'Spread grass seed on open areas in yard', priority:'low', category:'Personal', tags:['personal'], source:'dashboard' },
+    { id:'d43', title:'Pick up solar components from Jason install in wellhouse', priority:'low', category:'Personal', tags:['personal'], source:'dashboard' },
+
+    // Vehicle
+    { id:'d44', title:'Oil change — Nissan NV', priority:'high', category:'Vehicle', tags:['vehicle'], source:'dashboard' },
+    { id:'d45', title:'F350 6.0 — mechanic assessment hydrolock/short block eval', priority:'medium', category:'Vehicle', tags:['vehicle'], source:'dashboard' },
+    { id:'d46', title:'Pass work truck down to son when resolved', priority:'low', category:'Vehicle', tags:['vehicle'], source:'dashboard' },
+
+    // Products
+    { id:'d47', title:'Build cheat sheet content: UV5R Pro, BTech DA7X2, Baofeng UV5R Mini, AR-152, RadTel 950', priority:'high', category:'Products', tags:['products'], source:'dashboard' },
+    { id:'d48', title:'Make DA7X2 sticker', priority:'high', category:'Products', tags:['products'], source:'dashboard' },
+    { id:'d49', title:'3 radio kit options — update', priority:'high', category:'Products', tags:['products'], source:'dashboard' },
+    { id:'d50', title:'UV5R Mini cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+    { id:'d51', title:'UV-50PRO cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+    { id:'d52', title:'DA7X2 cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+    { id:'d53', title:'AR152 cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+    { id:'d54', title:'DM32 cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+    { id:'d55', title:'RadTel 950 cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+    { id:'d56', title:'D578 cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+    { id:'d57', title:'TH9800 cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+    { id:'d58', title:'G90 cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+    { id:'d59', title:'FT891 cheat sheet', priority:'medium', category:'Products', tags:['products','cheat-sheet'], source:'dashboard' },
+
+    // Marketing
+    { id:'d60', title:'Photos of molle clips with ends and sizes', priority:'high', category:'Marketing', tags:['marketing'], source:'dashboard' },
+
+    // Sales
+    { id:'d61', title:'Quote for HF NVIS setups for Kyle Minyard', priority:'high', category:'Sales', tags:['sales'], source:'dashboard' },
+
+    // Operations
+    { id:'d62', title:'Order cards for laser', priority:'high', category:'Operations', tags:['operations'], source:'dashboard' },
+
+    // Fulfillment
+    { id:'d63', title:'Alex Morrison — UVPRO qty 2 UV50PRO Lip Mount 2x4SRNMO', priority:'medium', category:'Fulfillment', tags:['fulfillment'], source:'dashboard' },
+    { id:'d64', title:'Ezra Siren — 2x UVPRO', priority:'medium', category:'Fulfillment', tags:['fulfillment'], source:'dashboard' },
+    { id:'d65', title:'Wranglerstar — DA7X2 repeater in a box, truck radio, RAM wedge mount, scanner antenna, suction cup antenna, lip mount, cheat sheets', priority:'medium', category:'Fulfillment', tags:['fulfillment'], source:'dashboard' },
+    { id:'d66', title:'Crayon Eric — BNC molle mount', priority:'medium', category:'Fulfillment', tags:['fulfillment'], source:'dashboard' },
+    { id:'d67', title:'Modern Rural Civilian — qty 3 UVPRO tan', priority:'medium', category:'Fulfillment', tags:['fulfillment'], source:'dashboard' },
+    { id:'d68', title:'Dave Canterbury — full package', priority:'medium', category:'Fulfillment', tags:['fulfillment'], source:'dashboard' },
+
+    // Customer Follow-Up
+    { id:'d69', title:'Robert Dettiburn — awaiting budget approval', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d70', title:'Ben Hartline follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d71', title:'Ben Butler L3Harris — awaiting budget approval', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d72', title:'Brendan Fallon — awaiting funds', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d73', title:'Matt Spadi — sent new order 1/28', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d74', title:'Carl Luppens follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d75', title:'Jack Copiano follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d76', title:'Robert Julian follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d77', title:'Darren Blake follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d78', title:'Jack Carmichael follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d79', title:'Zachary Lewis — awaiting funds', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d80', title:'Tanner Woodings follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d81', title:'Deric Schroeder follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d82', title:'Mark Krejcarek follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d83', title:'Brad Stufflebeam follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d84', title:'Anderson Fader follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d85', title:'Alejandro Flores follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d86', title:'Seth Alexander follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d87', title:'Tucker Reed follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d88', title:'Ryan Peterson follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d89', title:'Chris Krusiewicz follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d90', title:'Steve Bennett follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d91', title:'Jason Brunner — consult when boss returns from SHOT', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d92', title:'Seth follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d93', title:'Ourboros Forge follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d94', title:'Dustin Everett follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d95', title:'Sors Media Brent follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d96', title:'Roger and Friend follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d97', title:'Ritch Elbe and friend follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+    { id:'d98', title:'Hannah homeschool group husband follow-up', priority:'medium', category:'Customer Follow-Up', tags:['follow-up'], source:'dashboard' },
+
+    // Finance
+    { id:'d99', title:'Men\'s Alliance — income forthcoming', priority:'medium', category:'Finance', tags:['finance'], source:'dashboard' },
+    { id:'d100', title:'Refuge Classes — 50% of 27x$600 ZTH and 26x$750 TRO', priority:'medium', category:'Finance', tags:['finance'], source:'dashboard' },
+    { id:'d101', title:'Prometheus Tactical Ivan — June-August window', priority:'medium', category:'Finance', tags:['finance'], source:'dashboard' },
+    { id:'d102', title:'Invoice Caleb — Tundra AK', priority:'medium', category:'Finance', tags:['finance'], source:'dashboard' },
+
+    // Website
+    { id:'d103', title:'UV50PRO photo updates', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d104', title:'As seen on grid formatting and URLs', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d105', title:'Magnetic mic added to website', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d106', title:'Photos/videos of cheat sheets with each radio', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d107', title:'Ham radio exam cheat sheet — Jeff Matt Clum', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d108', title:'Getting Started Guide — UVPRO UV5R Mini DMR6X2PRO DA7X2 UV50PRO D578', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d109', title:'Homepage grid update', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d110', title:'Page for Radio as a Service', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d111', title:'Most popular accessories at top of each radio accessory page', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d112', title:'Add accessory pages for other radios', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d113', title:'Add accessories page links to site', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d114', title:'Cajun scanner research', priority:'low', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d115', title:'Btech and Retevis repeaters on site', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d116', title:'UVPRO insert page', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d117', title:'DMR6X2PRO insert page', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d118', title:'Mesh Made Easy landing page', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d119', title:'Radio Made Easy banners', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d120', title:'SOE cards', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d121', title:'WordPress plugin for product sold count', priority:'low', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d122', title:'Glossary of connectors SMA BNC Anderson 12V etc', priority:'low', category:'Website', tags:['website'], source:'dashboard' },
+    { id:'d123', title:'General UI polish consistency cleanup SEO optimization', priority:'medium', category:'Website', tags:['website'], source:'dashboard' },
+
+    // AI Projects
+    { id:'d124', title:'RMEEOC Exercise Plugin — map visualization enhancement', priority:'medium', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d125', title:'AnyTone D578 to DMR6X2 Pro format converter', priority:'medium', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d126', title:'Radio programming workflow automation WordPress plugin', priority:'medium', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d127', title:'CHIRP to UV Pro format converter — enhance for split tones and corner cases', priority:'medium', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d128', title:'RME frequencies for D578 and DMR6X2PRO automation', priority:'medium', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d129', title:'D578 to DMR6X2PRO converter automation', priority:'medium', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d130', title:'TH9800 build from RepeaterBook export', priority:'low', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d131', title:'UV5R build from RepeaterBook export', priority:'low', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d132', title:'UV5R Mini build from RepeaterBook export', priority:'low', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d133', title:'Personal dashboard — web based daily ops view', priority:'low', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d134', title:'Build your radio kit wizard', priority:'low', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d135', title:'Web-based area study builder', priority:'low', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d136', title:'Receiving and ordering system', priority:'low', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+    { id:'d137', title:'Church security and commercial radio outreach platform', priority:'low', category:'AI Projects', tags:['ai','dev'], source:'dashboard' },
+
+    // Physical Projects
+    { id:'d138', title:'Jungle antenna adapter 3D print design', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d139', title:'Battery box from Justin', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d140', title:'UVPRO RAM mount', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d141', title:'BT-01 to magnetic mic adapter', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d142', title:'Molle magnetic mic clip', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d143', title:'How to Cheat on the Ham Radio Exam book/app/site', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d144', title:'Ultimate power pole kit', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d145', title:'ZTH book', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d146', title:'Anti-ham stickers', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d147', title:'SDS200 brackets', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d148', title:'D578 brackets for power supply', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d149', title:'Hats for patches', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+    { id:'d150', title:'Leroy lettering', priority:'low', category:'Physical Projects', tags:['physical'], source:'dashboard' },
+
+    // For Sale
+    { id:'d151', title:'Sell FT60s', priority:'low', category:'For Sale', tags:['for-sale'], source:'dashboard' },
+    { id:'d152', title:'Sell VX6Rs', priority:'low', category:'For Sale', tags:['for-sale'], source:'dashboard' },
+    { id:'d153', title:'Sell Mobilink TNC qty 2', priority:'low', category:'For Sale', tags:['for-sale'], source:'dashboard' },
+    { id:'d154', title:'Sell IC-705', priority:'low', category:'For Sale', tags:['for-sale'], source:'dashboard' },
+    { id:'d155', title:'Sell Xiegu amplifiers', priority:'low', category:'For Sale', tags:['for-sale'], source:'dashboard' },
+    { id:'d156', title:'Sell FT-710 new in box + AES speaker — undecided possible trade toward IC-7300', priority:'low', category:'For Sale', tags:['for-sale'], source:'dashboard' },
+
+    // Purchases
+    { id:'d157', title:'Purchase pole saw', priority:'low', category:'Purchases', tags:['purchases'], source:'dashboard' },
+    { id:'d158', title:'Purchase SDS drill', priority:'low', category:'Purchases', tags:['purchases'], source:'dashboard' },
+    { id:'d159', title:'Purchase battery sander', priority:'low', category:'Purchases', tags:['purchases'], source:'dashboard' },
+    { id:'d160', title:'Purchase jig saw', priority:'low', category:'Purchases', tags:['purchases'], source:'dashboard' },
+    { id:'d161', title:'Purchase Mr. Heater wall mount', priority:'low', category:'Purchases', tags:['purchases'], source:'dashboard' },
+    { id:'d162', title:'Purchase safety siphon one per vehicle', priority:'low', category:'Purchases', tags:['purchases'], source:'dashboard' },
+
+    // Admin
+    { id:'d163', title:'Update IRS payment account', priority:'high', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d164', title:'Pay NC 2024 tax bill', priority:'high', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d165', title:'Add time zones to intake form', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d166', title:'UPS pickup agreement', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d167', title:'Sezzle — confirm still enabled', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d168', title:'Update concealed carry address', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d169', title:'Update NFA address', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d170', title:'Renew PJ trailer registration', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d171', title:'Email Randy — costs summary', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d172', title:'Insurance quote', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d173', title:'Hat to Karl Macklin', priority:'low', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d174', title:'Denis Sirosh chargeback', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d175', title:'VX6R claim', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d176', title:'Jon breaks bad news', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d177', title:'Mesh nodes for Jon Dillon', priority:'medium', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d178', title:'Pores Knob', priority:'low', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d179', title:'Alaska 2026 research', priority:'low', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d180', title:'Church security curriculum', priority:'low', category:'Admin', tags:['admin'], source:'dashboard' },
+    { id:'d181', title:'Vehicle DB VIN title registration date etc', priority:'low', category:'Admin', tags:['admin'], source:'dashboard' },
+
+    // Texas Trip Packing
+    { id:'d182', title:'10x Wavian fuel cans — Texas trip', priority:'high', category:'Texas Trip Packing', tags:['texas-trip'], source:'dashboard' },
+    { id:'d183', title:'Glock 45 — Texas trip', priority:'high', category:'Texas Trip Packing', tags:['texas-trip'], source:'dashboard' },
+    { id:'d184', title:'Mags loaded — Texas trip', priority:'high', category:'Texas Trip Packing', tags:['texas-trip'], source:'dashboard' },
+    { id:'d185', title:'Ammo for training session with host — Texas trip', priority:'high', category:'Texas Trip Packing', tags:['texas-trip'], source:'dashboard' },
+    { id:'d186', title:'Ear protection — Texas trip', priority:'high', category:'Texas Trip Packing', tags:['texas-trip'], source:'dashboard' },
+    { id:'d187', title:'Eye protection — Texas trip', priority:'high', category:'Texas Trip Packing', tags:['texas-trip'], source:'dashboard' },
+    { id:'d188', title:'Range bag essentials targets cleaning kit — Texas trip', priority:'medium', category:'Texas Trip Packing', tags:['texas-trip'], source:'dashboard' },
+];
+
+// ════════════════════════════════════════════
+// RENDERING
+// ════════════════════════════════════════════
+const allTasks = [...roadmapTasks, ...dashboardTasks];
+let currentSource = 'all';
+
+function setSource(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentSource = tab.dataset.source;
+    render();
+}
+
+function getFilteredTasks() {
+    let tasks = currentSource === 'all' ? allTasks :
+                currentSource === 'roadmap' ? roadmapTasks : dashboardTasks;
+
+    const search = document.getElementById('search').value.toLowerCase();
+    const priority = document.getElementById('priority-filter').value;
+    const category = document.getElementById('category-filter').value;
+
+    if (search) {
+        tasks = tasks.filter(t =>
+            t.title.toLowerCase().includes(search) ||
+            (t.detail && t.detail.toLowerCase().includes(search)) ||
+            (t.category && t.category.toLowerCase().includes(search)) ||
+            (t.phase && t.phase.toLowerCase().includes(search)) ||
+            t.tags.some(tag => tag.toLowerCase().includes(search))
+        );
+    }
+    if (priority !== 'all') {
+        tasks = tasks.filter(t => t.priority === priority);
+    }
+    if (category !== 'all') {
+        tasks = tasks.filter(t => (t.phase || t.category) === category);
+    }
+    return tasks;
+}
+
+function getGroupKey(task) {
+    return task.phase || task.category || 'Ungrouped';
+}
+
+function render() {
+    const tasks = getFilteredTasks();
+    const container = document.getElementById('task-list');
+
+    // Group by phase/category
+    const groups = {};
+    const groupOrder = [];
+    tasks.forEach(t => {
+        const key = getGroupKey(t);
+        if (!groups[key]) { groups[key] = []; groupOrder.push(key); }
+        groups[key].push(t);
+    });
+
+    // Sort tasks within groups: high > medium > low
+    const prioOrder = { high: 0, medium: 1, low: 2 };
+    Object.values(groups).forEach(arr => arr.sort((a, b) => prioOrder[a.priority] - prioOrder[b.priority]));
+
+    let html = '';
+    groupOrder.forEach(group => {
+        const items = groups[group];
+        const highCount = items.filter(t => t.priority === 'high').length;
+        html += `<div class="phase-section">
+            <div class="phase-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+                <h3>${escapeHtml(group)}</h3>
+                <span class="badge">${items.length} task${items.length!==1?'s':''}${highCount ? ' · '+highCount+' high' : ''}</span>
+            </div>
+            <div class="phase-body">`;
+        items.forEach(t => {
+            html += `<div class="task-row">
+                <div class="priority-dot ${t.priority}"></div>
+                <div class="task-title">
+                    ${escapeHtml(t.title)}
+                    ${t.detail ? '<span class="task-detail">'+escapeHtml(t.detail)+'</span>' : ''}
+                    <div class="tags">
+                        <span class="tag">${t.source === 'roadmap' ? 'Roadmap' : 'Dashboard'}</span>
+                        ${t.effort ? '<span class="tag">'+escapeHtml(t.effort)+'</span>' : ''}
+                        ${t.tags.map(tag => '<span class="tag">'+escapeHtml(tag)+'</span>').join('')}
+                    </div>
+                </div>
+            </div>`;
+        });
+        html += '</div></div>';
+    });
+
+    if (!tasks.length) {
+        html = '<div style="text-align:center;padding:40px;color:#8b949e;">No tasks match your filters</div>';
+    }
+
+    container.innerHTML = html;
+
+    // Update stats
+    const visible = tasks;
+    document.getElementById('stat-total').textContent = visible.length;
+    document.getElementById('stat-high').textContent = visible.filter(t => t.priority === 'high').length;
+    document.getElementById('stat-medium').textContent = visible.filter(t => t.priority === 'medium').length;
+    document.getElementById('stat-low').textContent = visible.filter(t => t.priority === 'low').length;
+
+    // Update category filter options
+    updateCategoryFilter();
+}
+
+function updateCategoryFilter() {
+    const select = document.getElementById('category-filter');
+    const currentVal = select.value;
+    const tasks = currentSource === 'all' ? allTasks :
+                  currentSource === 'roadmap' ? roadmapTasks : dashboardTasks;
+    const cats = [...new Set(tasks.map(t => t.phase || t.category))].sort();
+
+    select.innerHTML = '<option value="all">All Categories</option>';
+    cats.forEach(c => {
+        select.innerHTML += `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`;
+    });
+    if (cats.includes(currentVal)) select.value = currentVal;
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// Init
+document.getElementById('count-all').textContent = allTasks.length;
+document.getElementById('count-roadmap').textContent = roadmapTasks.length;
+document.getElementById('count-dashboard').textContent = dashboardTasks.length;
+render();
+</script>
+</body>
+</html>
