@@ -123,13 +123,16 @@
         {
           "text": "ntfy notification app test",
           "sub": "Scheduled for 5:45 PM",
-          "done": false
+          "done": true
         }
       ]
     }
   ],
   "grocery": [
-    { "text": "Buy more protein powder", "done": false }
+    {
+      "text": "Buy more protein powder",
+      "done": false
+    }
   ],
   "notes": "",
   "backlog": [
