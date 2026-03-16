@@ -161,6 +161,11 @@
         {
           "text": "3 radio kit options — update",
           "done": false
+        },
+        {
+          "text": "Fix /shop/ 404 error",
+          "done": false,
+          "sub": "WooCommerce Settings > Advanced > Page Setup — actively turning away buyers"
         }
       ]
     }
@@ -196,7 +201,8 @@
       ],
       "detail": "WooCommerce Settings > Advanced > Page Setup — actively turning away buyers",
       "phase": "Phase 1: Critical Fixes",
-      "effort": "30 min"
+      "effort": "30 min",
+      "movedToToday": true
     },
     {
       "id": "c2",
