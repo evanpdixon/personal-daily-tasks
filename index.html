@@ -529,10 +529,12 @@ function renderDashboard() {
             const checked = task.done ? 'checked' : '';
             const checkedClass = task.done ? 'checked' : '';
             const subHtml = task.sub ? `<span class="sub">${escapeHtml(task.sub)}</span>` : '';
+            const deleteBtn = task.done ? `<button onclick="deleteTask(${si}, ${ti})" title="Delete task" style="background:none;border:1px solid #4a1c1c;color:#f85149;cursor:pointer;font-size:0.7rem;padding:3px 8px;border-radius:4px;white-space:nowrap;">&times; Delete</button>` : '';
             tasksHtml += `
                 <div class="task ${checkedClass}">
                     <input type="checkbox" ${checked} onchange="handleCheck(${si}, ${ti}, this)">
                     <div class="task-text">${escapeHtml(task.text)}${subHtml}</div>
+                    ${deleteBtn}
                     <button onclick="moveToBacklog(${si}, ${ti})" title="Move to backlog" style="background:none;border:1px solid #30363d;color:#8b949e;cursor:pointer;font-size:0.7rem;padding:3px 8px;border-radius:4px;white-space:nowrap;">&#8592; Backlog</button>
                 </div>`;
         });
@@ -605,6 +607,22 @@ function addGroceryItem() {
     input.value = '';
     renderGrocery();
     scheduleSave();
+}
+
+function deleteTask(sectionIdx, taskIdx) {
+    const section = currentData.sections[sectionIdx];
+    const task = section.tasks[taskIdx];
+    if (!task) return;
+    if (!confirm(`Delete "${task.text}"?`)) return;
+
+    section.tasks.splice(taskIdx, 1);
+    if (section.tasks.length === 0) {
+        currentData.sections.splice(sectionIdx, 1);
+    }
+
+    renderDashboard();
+    scheduleSave();
+    showSaveIndicator('Deleted', false);
 }
 
 function moveToBacklog(sectionIdx, taskIdx) {
