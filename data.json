@@ -119,7 +119,7 @@
         {
           "text": "Unload gas cans",
           "sub": "",
-          "done": false
+          "done": true
         },
         {
           "text": "Bring blanket and pillow inside",
