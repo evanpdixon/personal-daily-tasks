@@ -533,6 +533,7 @@ function renderDashboard() {
                 <div class="task ${checkedClass}">
                     <input type="checkbox" ${checked} onchange="handleCheck(${si}, ${ti}, this)">
                     <div class="task-text">${escapeHtml(task.text)}${subHtml}</div>
+                    <button onclick="moveToBacklog(${si}, ${ti})" title="Move to backlog" style="background:none;border:1px solid #30363d;color:#8b949e;cursor:pointer;font-size:0.7rem;padding:3px 8px;border-radius:4px;white-space:nowrap;">&#8592; Backlog</button>
                 </div>`;
         });
 
@@ -604,6 +605,35 @@ function addGroceryItem() {
     input.value = '';
     renderGrocery();
     scheduleSave();
+}
+
+function moveToBacklog(sectionIdx, taskIdx) {
+    const section = currentData.sections[sectionIdx];
+    const task = section.tasks[taskIdx];
+    if (!task) return;
+
+    // Add to backlog
+    if (!currentData.backlog) currentData.backlog = [];
+    currentData.backlog.unshift({
+        id: 'bt-' + Date.now(),
+        title: task.text,
+        detail: task.sub || '',
+        priority: 'medium',
+        category: section.title,
+        source: 'daily'
+    });
+
+    // Remove from daily
+    section.tasks.splice(taskIdx, 1);
+
+    // Remove empty sections
+    if (section.tasks.length === 0) {
+        currentData.sections.splice(sectionIdx, 1);
+    }
+
+    renderDashboard();
+    scheduleSave();
+    showSaveIndicator('Moved to backlog', false);
 }
 
 function toggleSection(header) {
