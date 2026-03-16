@@ -4,8 +4,7 @@ Usage: python listener.py
 """
 import json, subprocess, time, requests, os
 
-NTFY_TOPIC = "rme-task-inbox"
-NTFY_TOKEN = os.environ.get("NTFY_TOKEN", "")
+NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "rme-task-inbox")
 NTFY_URL = f"https://ntfy.sh/{NTFY_TOPIC}/json?poll=1&since=30s"
 DATA_FILE = os.path.join(os.path.dirname(__file__), "data.json")
 POLL_INTERVAL = 15  # seconds
@@ -71,7 +70,7 @@ def git_push():
 
 def poll():
     try:
-        res = requests.get(NTFY_URL, timeout=10, headers={"Authorization": f"Bearer {NTFY_TOKEN}"})
+        res = requests.get(NTFY_URL, timeout=10)
         messages = []
         for line in res.text.strip().split("\n"):
             if not line:

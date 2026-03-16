@@ -28,7 +28,7 @@
   <Actions>
     <Exec>
       <Command>cmd</Command>
-      <Arguments>/c "set NTFY_TOKEN=tk_3y86yxp9k7oxzuso6v1ojqftd2i3l&amp;&amp; pythonw C:\Claude\personal-daily-tasks\listener.py"</Arguments>
+      <Arguments>/c "set NTFY_TOPIC=rme-tasks-e2ad4389abf7d84d&amp;&amp; pythonw C:\Claude\personal-daily-tasks\listener.py"</Arguments>
       <WorkingDirectory>C:\Claude\personal-daily-tasks</WorkingDirectory>
     </Exec>
   </Actions>
