@@ -3,7 +3,7 @@
   "sections": [
     {
       "id": "patrick",
-      "title": "Radio Files â€” Patrick Green",
+      "title": "Radio Files — Patrick Green",
       "tasks": [
         {
           "text": "Convert existing radio files for the D578",
@@ -18,7 +18,7 @@
       "tasks": [
         {
           "text": "Create BS-50 product listing on the site",
-          "sub": "Product photo, description, pricing â€” new standalone product page",
+          "sub": "Product photo, description, pricing — new standalone product page",
           "done": false
         },
         {
@@ -35,11 +35,11 @@
     },
     {
       "id": "wizard",
-      "title": "Radio Wizard â€” Kit Builder",
+      "title": "Radio Wizard — Kit Builder",
       "tasks": [
         {
           "text": "Continue radio wizard implementation",
-          "sub": "Ongoing session â€” pick up where you left off",
+          "sub": "Ongoing session — pick up where you left off",
           "done": false
         },
         {
@@ -51,16 +51,16 @@
     },
     {
       "id": "marketing",
-      "title": "Marketing â€” Connect with Erin",
+      "title": "Marketing — Connect with Erin",
       "tasks": [
         {
           "text": "Plan this week's promotion",
-          "sub": "Likely a value-add email via Mailchimp â€” explore angle with Erin",
+          "sub": "Likely a value-add email via Mailchimp — explore angle with Erin",
           "done": true
         },
         {
           "text": "Discuss social media assets for the promotion",
-          "sub": "Erin creates social assets â€” align on deliverables",
+          "sub": "Erin creates social assets — align on deliverables",
           "done": true
         },
         {
@@ -69,7 +69,7 @@
           "done": true
         },
         {
-          "text": "Prioritize Cheat Sheets â€” plan new collateral",
+          "text": "Prioritize Cheat Sheets — plan new collateral",
           "sub": "Identify which cheat sheets are missing and start creating them",
           "done": false
         }
@@ -97,7 +97,7 @@
       "tasks": [
         {
           "text": "Check on t-shirt printing",
-          "sub": "High priority â€” check status and handle whatever's needed",
+          "sub": "High priority — check status and handle whatever's needed",
           "done": false
         },
         {
@@ -111,7 +111,7 @@
       "title": "From Backlog",
       "tasks": [
         {
-          "text": "3 radio kit options â€” update",
+          "text": "3 radio kit options — update",
           "done": false
         }
       ]
