@@ -103,7 +103,7 @@
         {
           "text": "Catch up on any remaining admin tasks",
           "sub": "Email, invoices, order follow-ups, etc.",
-          "done": false
+          "done": true
         }
       ]
     },
