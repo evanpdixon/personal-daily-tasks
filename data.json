@@ -172,10 +172,6 @@
   ],
   "grocery": [
     {
-      "text": "Protein shakes",
-      "done": true
-    },
-    {
       "text": "Milk",
       "done": true
     },
