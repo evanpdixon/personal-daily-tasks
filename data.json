@@ -98,7 +98,7 @@
         {
           "text": "Check on t-shirt printing",
           "sub": "High priority — check status and handle whatever's needed",
-          "done": false
+          "done": true
         },
         {
           "text": "Catch up on any remaining admin tasks",
