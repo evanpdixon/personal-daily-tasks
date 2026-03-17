@@ -64,9 +64,15 @@ Rules:
         return False
 
 def git_push():
-    subprocess.run(["git", "add", "data.json"], cwd=os.path.dirname(__file__))
-    subprocess.run(["git", "commit", "-m", "Task update from mobile"], cwd=os.path.dirname(__file__))
-    subprocess.run(["git", "push"], cwd=os.path.dirname(__file__))
+    cwd = os.path.dirname(__file__)
+    subprocess.run(["git", "pull", "--rebase"], cwd=cwd)
+    subprocess.run(["git", "add", "data.json"], cwd=cwd)
+    subprocess.run(["git", "commit", "-m", "Task update from mobile"], cwd=cwd)
+    result = subprocess.run(["git", "push"], cwd=cwd, capture_output=True, text=True)
+    if result.returncode != 0:
+        # Retry once after pull
+        subprocess.run(["git", "pull", "--rebase"], cwd=cwd)
+        subprocess.run(["git", "push"], cwd=cwd)
 
 def poll():
     try:
