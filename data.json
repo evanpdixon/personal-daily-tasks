@@ -2,6 +2,17 @@
   "date": "2026-03-16",
   "sections": [
     {
+      "id": "patrick",
+      "title": "Radio Files — Patrick Green",
+      "tasks": [
+        {
+          "text": "Convert existing radio files for the D578",
+          "sub": "Take current files and prep/convert for Patrick's D578 radio",
+          "done": false
+        }
+      ]
+    },
+    {
       "id": "bs50",
       "title": "Add BS-50 to Website",
       "tasks": [
@@ -48,6 +59,21 @@
       "title": "Marketing — Connect with Erin",
       "tasks": [
         {
+          "text": "Plan this week's promotion",
+          "sub": "Likely a value-add email via Mailchimp — explore angle with Erin",
+          "done": true
+        },
+        {
+          "text": "Discuss social media assets for the promotion",
+          "sub": "Erin creates social assets — align on deliverables",
+          "done": true
+        },
+        {
+          "text": "Review marketing roadmap together",
+          "sub": "Align on upcoming priorities and timeline",
+          "done": true
+        },
+        {
           "text": "Prioritize Cheat Sheets — plan new collateral",
           "sub": "Identify which cheat sheets are missing and start creating them",
           "done": false
@@ -60,6 +86,16 @@
       "tasks": [
         {
           "text": "Refuel Nissan",
+          "sub": "",
+          "done": false
+        },
+        {
+          "text": "Get duplicate Nissan key made",
+          "sub": "Get a spare key cut and zip-tie it somewhere on the body of the van",
+          "done": false
+        },
+        {
+          "text": "Bring blanket and pillow inside",
           "sub": "",
           "done": false
         },
@@ -89,6 +125,15 @@
     {
       "title": "From Backlog",
       "tasks": [
+        {
+          "text": "3 radio kit options — update",
+          "done": false
+        },
+        {
+          "text": "Test Safari on Product Options checkboxes for handheld radio pages",
+          "done": true,
+          "sub": "Rachel reported checkboxes not working in Safari — investigate and fix"
+        },
         {
           "text": "Complete programming for DA7X2 orders",
           "done": false
