@@ -101,10 +101,6 @@
       "title": "From Backlog",
       "tasks": [
         {
-          "text": "3 radio kit options — update",
-          "done": true
-        },
-        {
           "text": "Complete programming for DA7X2 orders",
           "done": false
         },
