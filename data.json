@@ -30,11 +30,6 @@
           "text": "Add BS-50 as add-on for UV-50 Pro via Product Options plugin",
           "sub": "Add to UV-50 Pro product page as a selectable accessory option",
           "done": false
-        },
-        {
-          "text": "Test Safari on Product Options checkboxes for handheld radio pages",
-          "sub": "Rachel reported checkboxes not working in Safari — verify and fix",
-          "done": false
         }
       ]
     },
@@ -50,6 +45,11 @@
         {
           "text": "Identify & knock out low-hanging fruit on RME site",
           "sub": "Quick wins from the site roadmap",
+          "done": false
+        },
+        {
+          "text": "Test Safari on Product Options checkboxes for handheld radio pages",
+          "sub": "Rachel reported checkboxes not working in Safari on handheld radio product pages — investigate and fix",
           "done": false
         }
       ]
