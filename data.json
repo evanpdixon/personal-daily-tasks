@@ -127,6 +127,10 @@
         {
           "text": "Complete programming for DA7X2 orders",
           "done": false
+        },
+        {
+          "text": "Make DA7X2 sticker",
+          "done": false
         }
       ]
     }
@@ -1947,17 +1951,6 @@
     {
       "id": "d47",
       "title": "Build cheat sheet content: UV5R Pro, BTech DA7X2, Baofeng UV5R Mini, AR-152, RadTel 950",
-      "done": false,
-      "priority": "high",
-      "source": "dashboard",
-      "tags": [
-        "products"
-      ],
-      "category": "Products"
-    },
-    {
-      "id": "d48",
-      "title": "Make DA7X2 sticker",
       "done": false,
       "priority": "high",
       "source": "dashboard",
