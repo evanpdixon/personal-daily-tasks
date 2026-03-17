@@ -123,6 +123,10 @@
           "text": "Test Safari on Product Options checkboxes for handheld radio pages",
           "done": true,
           "sub": "Rachel reported checkboxes not working in Safari — investigate and fix"
+        },
+        {
+          "text": "Complete programming for DA7X2 orders",
+          "done": false
         }
       ]
     }
@@ -1444,17 +1448,6 @@
       "detail": "Kit builder completion, cart abandonment, email rates, A/B tests",
       "phase": "Phase 14: Ongoing Operations",
       "effort": "Ongoing"
-    },
-    {
-      "id": "d1",
-      "title": "Complete programming for DA7X2 orders",
-      "done": false,
-      "priority": "high",
-      "source": "dashboard",
-      "tags": [
-        "orders"
-      ],
-      "category": "Orders"
     },
     {
       "id": "d2",
