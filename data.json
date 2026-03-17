@@ -93,6 +93,11 @@
           "text": "Bring blanket and pillow inside",
           "sub": "",
           "done": false
+        },
+        {
+          "text": "Call Hans",
+          "sub": "",
+          "done": false
         }
       ]
     },
