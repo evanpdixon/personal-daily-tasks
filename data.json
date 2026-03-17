@@ -115,17 +115,6 @@
           "done": false
         }
       ]
-    },
-    {
-      "id": "test",
-      "title": "Test Tasks",
-      "tasks": [
-        {
-          "text": "ntfy notification app test",
-          "sub": "Scheduled for 5:45 PM",
-          "done": true
-        }
-      ]
     }
   ],
   "grocery": [
