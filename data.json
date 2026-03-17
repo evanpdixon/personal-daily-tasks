@@ -97,17 +97,6 @@
       ]
     },
     {
-      "id": "bugfix",
-      "title": "Bug Fixes",
-      "tasks": [
-        {
-          "text": "Test Safari on Product Options checkboxes for handheld radio pages",
-          "sub": "Rachel reported checkboxes not working in Safari — investigate and fix",
-          "done": true
-        }
-      ]
-    },
-    {
       "id": "admin",
       "title": "Administrative Work",
       "tasks": [
@@ -136,6 +125,14 @@
   "grocery": [],
   "notes": "",
   "backlog": [
+    {
+      "id": "bt-1773714867252",
+      "title": "Test Safari on Product Options checkboxes for handheld radio pages",
+      "detail": "Rachel reported checkboxes not working in Safari — investigate and fix",
+      "priority": "medium",
+      "category": "Bug Fixes",
+      "source": "daily"
+    },
     {
       "id": "bt-1773700028408",
       "title": "Fix /shop/ 404 error",
