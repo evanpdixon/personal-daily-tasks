@@ -121,7 +121,7 @@
         },
         {
           "text": "Test Safari on Product Options checkboxes for handheld radio pages",
-          "done": false,
+          "done": true,
           "sub": "Rachel reported checkboxes not working in Safari — investigate and fix"
         }
       ]
