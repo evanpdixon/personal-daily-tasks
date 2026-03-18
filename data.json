@@ -127,7 +127,7 @@
       "tasks": [
         {
           "text": "3 radio kit options — update",
-          "done": false
+          "done": true
         },
         {
           "text": "Complete programming for DA7X2 orders",
