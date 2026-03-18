@@ -35,11 +35,6 @@
           "text": "Identify & knock out low-hanging fruit on RME site",
           "sub": "Quick wins from the site roadmap",
           "done": false
-        },
-        {
-          "text": "Test Safari on Product Options checkboxes for handheld radio pages",
-          "sub": "Rachel reported checkboxes not working in Safari on handheld radio product pages — investigate and fix",
-          "done": false
         }
       ]
     },
