@@ -11,7 +11,7 @@
             background: #0d1117;
             color: #c9d1d9;
             min-height: 100vh;
-            padding: 20px;
+            padding: 48px 20px 20px;
         }
         .container { max-width: 900px; margin: 0 auto; }
         header {
@@ -404,6 +404,54 @@
         .modal button:hover { background: #f0c040; }
         .modal a { color: #e5a00d; font-size: 0.85rem; }
 
+        /* Sticky top bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 36px;
+            background: #0d1117;
+            border-bottom: 1px solid #21262d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 900;
+            font-size: 0.78rem;
+        }
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .top-bar-brand {
+            color: #e5a00d;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+        .top-bar-nav {
+            display: flex;
+            gap: 4px;
+        }
+        .top-bar-nav a {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+        }
+        .top-bar-nav a:hover { background: #161b22; color: #c9d1d9; }
+        .top-bar-nav a.active { background: #161b22; color: #e5a00d; }
+        .top-bar-right {
+            color: #8b949e;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .top-bar-right .settings-link { font-size: 0.78rem; }
+
         /* Responsive */
         @media (max-width: 600px) {
             body { padding: 12px; }
@@ -413,6 +461,21 @@
     </style>
 </head>
 <body>
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <span class="top-bar-brand">Daily Dashboard</span>
+            <nav class="top-bar-nav">
+                <a href="index.html" class="active">Today</a>
+                <a href="backlog.html" id="backlog-link">Backlog</a>
+            </nav>
+        </div>
+        <div class="top-bar-right">
+            <span id="top-bar-date"></span>
+            <span id="top-bar-clock"></span>
+            <a class="settings-link" onclick="showPatModal()">&#9881;</a>
+        </div>
+    </div>
+
     <div class="loading-overlay" id="loading">Loading dashboard...</div>
     <div class="save-indicator" id="save-indicator">Saved</div>
 
@@ -420,11 +483,6 @@
         <header>
             <h1>Daily Dashboard</h1>
             <div class="date" id="header-date"></div>
-            <div class="time-now" id="clock"></div>
-            <div class="header-links">
-                <a href="backlog.html" class="nav-link" id="backlog-link">View Full Backlog</a>
-                <a class="settings-link" onclick="showPatModal()">&#9881; Settings</a>
-            </div>
         </header>
 
         <div class="progress-label"><span id="done-count">0</span> of <span id="total-count">0</span> tasks complete</div>
@@ -618,7 +676,7 @@ function renderDashboard() {
 
     // Backlog link
     const backlogCount = data.backlog ? data.backlog.length : 0;
-    document.getElementById('backlog-link').textContent = `View Full Backlog (${backlogCount} tasks)`;
+    document.getElementById('backlog-link').textContent = `Backlog (${backlogCount})`;
 
     // Sections
     const container = document.getElementById('sections-container');
@@ -1281,7 +1339,9 @@ function escapeHtml(str) {
 
 function updateClock() {
     const now = new Date();
-    document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+    document.getElementById('top-bar-clock').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const opts = { month: 'short', day: 'numeric', year: 'numeric' };
+    document.getElementById('top-bar-date').textContent = now.toLocaleDateString('en-US', opts);
 }
 
 // ════════════════════════════════════════════

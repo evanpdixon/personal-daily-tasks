@@ -11,7 +11,7 @@
             background: #0d1117;
             color: #c9d1d9;
             min-height: 100vh;
-            padding: 20px;
+            padding: 48px 20px 20px;
         }
         .container { max-width: 1100px; margin: 0 auto; }
         header {
@@ -160,7 +160,100 @@
             font-family: inherit;
         }
         .tc-title-input:focus { outline: none; }
-        .tc-detail { color: #8b949e; font-size: 0.82rem; margin-top: 3px; }
+        .tc-detail {
+            color: #8b949e;
+            font-size: 0.82rem;
+            margin-top: 3px;
+            cursor: pointer;
+            padding: 2px 4px;
+            margin-left: -4px;
+            border-radius: 4px;
+        }
+        .tc-detail:hover { background: #21262d; }
+        .tc-detail-placeholder {
+            color: #484f58;
+            font-style: italic;
+            font-size: 0.82rem;
+            margin-top: 3px;
+            cursor: pointer;
+            padding: 2px 4px;
+            margin-left: -4px;
+            border-radius: 4px;
+        }
+        .tc-detail-placeholder:hover { background: #21262d; }
+        .tc-detail-input {
+            font-size: 0.82rem;
+            line-height: 1.4;
+            background: #0d1117;
+            border: 1px solid #e5a00d;
+            color: #c9d1d9;
+            padding: 4px 8px;
+            border-radius: 4px;
+            width: 100%;
+            font-family: inherit;
+        }
+        .tc-detail-input:focus { outline: none; }
+        .tc-tag.editable { cursor: pointer; }
+        .tc-tag.editable:hover { outline: 1px solid #e5a00d; }
+        .tc-tag-input {
+            font-size: 0.7rem;
+            background: #0d1117;
+            border: 1px solid #e5a00d;
+            color: #c9d1d9;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-family: inherit;
+            width: 100px;
+        }
+        .tc-tag-input:focus { outline: none; }
+
+        /* Sticky top bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 36px;
+            background: #0d1117;
+            border-bottom: 1px solid #21262d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 900;
+            font-size: 0.78rem;
+        }
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .top-bar-brand {
+            color: #e5a00d;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+        .top-bar-nav {
+            display: flex;
+            gap: 4px;
+        }
+        .top-bar-nav a {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+        }
+        .top-bar-nav a:hover { background: #161b22; color: #c9d1d9; }
+        .top-bar-nav a.active { background: #161b22; color: #e5a00d; }
+        .top-bar-right {
+            color: #8b949e;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .top-bar-right .settings-link { font-size: 0.78rem; }
         .tc-meta { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
         .tc-tag {
             font-size: 0.7rem;
@@ -381,6 +474,21 @@
     </style>
 </head>
 <body>
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <span class="top-bar-brand">Daily Dashboard</span>
+            <nav class="top-bar-nav">
+                <a href="index.html">Today</a>
+                <a href="backlog.html" class="active">Backlog</a>
+            </nav>
+        </div>
+        <div class="top-bar-right">
+            <span id="top-bar-date"></span>
+            <span id="top-bar-clock"></span>
+            <a class="settings-link" onclick="showPatModal()">&#9881;</a>
+        </div>
+    </div>
+
     <div class="loading-overlay" id="loading">Loading backlog...</div>
     <div class="save-indicator" id="save-indicator">Saved</div>
 
@@ -388,10 +496,6 @@
         <header>
             <h1>RME Master Backlog</h1>
             <div class="sub" id="task-count-sub">All Tasks</div>
-            <div class="header-links">
-                <a href="index.html" class="nav-link">Back to Daily Dashboard</a>
-                <a class="settings-link" onclick="showPatModal()">&#9881; Settings</a>
-            </div>
         </header>
 
         <div class="tabs" id="tabs">
@@ -721,6 +825,73 @@ function startEdit(idx, titleEl) {
     });
 }
 
+function startEditDetail(idx, el) {
+    if (el.querySelector('.tc-detail-input')) return;
+    const task = currentData.backlog[idx];
+    const currentVal = task.detail || '';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'tc-detail-input';
+    input.value = currentVal;
+    input.placeholder = 'Add detail...';
+    el.textContent = '';
+    el.appendChild(input);
+    input.focus();
+    input.select();
+
+    function finishEdit() {
+        const newVal = input.value.trim();
+        task.detail = newVal;
+        scheduleSave();
+        render();
+    }
+    input.addEventListener('blur', finishEdit);
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { input.value = currentVal; input.blur(); }
+    });
+    input.addEventListener('click', e => e.stopPropagation());
+}
+
+function cycleField(idx, field, el) {
+    const task = currentData.backlog[idx];
+    const priorities = ['high', 'medium', 'low'];
+    const current = priorities.indexOf(task.priority);
+    task.priority = priorities[(current + 1) % priorities.length];
+    scheduleSave();
+    render();
+}
+
+function startEditField(idx, field, el) {
+    if (el.querySelector('.tc-tag-input')) return;
+    const task = currentData.backlog[idx];
+    const currentVal = task[field] || '';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'tc-tag-input';
+    input.value = currentVal;
+    el.textContent = '';
+    el.appendChild(input);
+    input.focus();
+    input.select();
+
+    function finishEdit() {
+        const newVal = input.value.trim();
+        if (newVal) task[field] = newVal;
+        else delete task[field];
+        scheduleSave();
+        render();
+    }
+    input.addEventListener('blur', finishEdit);
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        if (e.key === 'Escape') { input.value = currentVal; input.blur(); }
+    });
+    input.addEventListener('click', e => e.stopPropagation());
+}
+
 // ════════════════════════════════════════════
 // Filtering & Rendering
 // ════════════════════════════════════════════
@@ -757,12 +928,14 @@ function render() {
             const checkedClass = t.done ? 'checked' : '';
             const checkedAttr = t.done ? 'checked' : '';
             const priorityClass = t.priority || 'medium';
-            const detail = t.detail ? `<div class="tc-detail">${escapeHtml(t.detail)}</div>` : '';
+            const detail = t.detail
+                ? `<div class="tc-detail" onclick="startEditDetail(${realIdx}, this)">${escapeHtml(t.detail)}</div>`
+                : `<div class="tc-detail-placeholder" onclick="startEditDetail(${realIdx}, this)">+ add detail</div>`;
             const tags = [];
-            tags.push(`<span class="tc-tag ${priorityClass}">${priorityClass}</span>`);
-            if (t.phase) tags.push(`<span class="tc-tag">${escapeHtml(t.phase)}</span>`);
-            if (t.category) tags.push(`<span class="tc-tag">${escapeHtml(t.category)}</span>`);
-            if (t.effort) tags.push(`<span class="tc-tag">${escapeHtml(t.effort)}</span>`);
+            tags.push(`<span class="tc-tag editable ${priorityClass}" onclick="cycleField(${realIdx},'priority',this)" title="Click to change">${priorityClass}</span>`);
+            if (t.phase) tags.push(`<span class="tc-tag editable" onclick="startEditField(${realIdx},'phase',this)" title="Click to edit">${escapeHtml(t.phase)}</span>`);
+            if (t.category) tags.push(`<span class="tc-tag editable" onclick="startEditField(${realIdx},'category',this)" title="Click to edit">${escapeHtml(t.category)}</span>`);
+            if (t.effort) tags.push(`<span class="tc-tag editable" onclick="startEditField(${realIdx},'effort',this)" title="Click to edit">${escapeHtml(t.effort)}</span>`);
             if (t.source) tags.push(`<span class="tc-tag">${t.source}</span>`);
             if (t.movedToToday) tags.push(`<span class="tc-tag" style="background:#0d2818;color:#3fb950;">in today</span>`);
             (t.tags || []).forEach(tag => tags.push(`<span class="tc-tag">${escapeHtml(tag)}</span>`));
@@ -846,6 +1019,15 @@ function escapeHtml(str) {
     div.textContent = str;
     return div.innerHTML;
 }
+
+function updateTopBar() {
+    const now = new Date();
+    document.getElementById('top-bar-clock').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const opts = { month: 'short', day: 'numeric', year: 'numeric' };
+    document.getElementById('top-bar-date').textContent = now.toLocaleDateString('en-US', opts);
+}
+setInterval(updateTopBar, 1000);
+updateTopBar();
 
 // ════════════════════════════════════════════
 // Init
