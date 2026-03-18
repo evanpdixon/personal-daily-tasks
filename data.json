@@ -75,11 +75,6 @@
       "title": "Administrative Work",
       "tasks": [
         {
-          "text": "Check on t-shirt printing",
-          "sub": "High priority — check status and handle whatever's needed",
-          "done": false
-        },
-        {
           "text": "Catch up on any remaining admin tasks",
           "sub": "Email, invoices, order follow-ups, etc.",
           "done": false
