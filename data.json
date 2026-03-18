@@ -104,10 +104,6 @@
     {
       "text": "milk",
       "done": false
-    },
-    {
-      "text": "whicker",
-      "done": false
     }
   ],
   "notes": "",
@@ -3498,5 +3494,6 @@
       ],
       "category": "Texas Trip Packing"
     }
-  ]
+  ],
+  "lists": []
 }
