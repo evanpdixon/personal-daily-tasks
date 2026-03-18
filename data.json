@@ -71,17 +71,6 @@
       ]
     },
     {
-      "id": "admin",
-      "title": "Administrative Work",
-      "tasks": [
-        {
-          "text": "Catch up on any remaining admin tasks",
-          "sub": "Email, invoices, order follow-ups, etc.",
-          "done": false
-        }
-      ]
-    },
-    {
       "title": "From Backlog",
       "tasks": [
         {
