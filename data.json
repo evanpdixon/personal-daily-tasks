@@ -8,7 +8,7 @@
         {
           "text": "Convert existing radio files for the D578",
           "sub": "Take current files and prep/convert for Patrick's D578 radio",
-          "done": false
+          "done": true
         }
       ]
     },
