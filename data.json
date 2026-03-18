@@ -59,11 +59,6 @@
       "title": "Errands & Around the House",
       "tasks": [
         {
-          "text": "Refuel Nissan",
-          "sub": "",
-          "done": false
-        },
-        {
           "text": "Call Hans",
           "sub": "",
           "done": false
