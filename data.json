@@ -48,21 +48,6 @@
       "title": "Marketing — Connect with Erin",
       "tasks": [
         {
-          "text": "Plan this week's promotion",
-          "sub": "Likely a value-add email via Mailchimp — explore angle with Erin",
-          "done": true
-        },
-        {
-          "text": "Discuss social media assets for the promotion",
-          "sub": "Erin creates social assets — align on deliverables",
-          "done": true
-        },
-        {
-          "text": "Review marketing roadmap together",
-          "sub": "Align on upcoming priorities and timeline",
-          "done": true
-        },
-        {
           "text": "Prioritize Cheat Sheets — plan new collateral",
           "sub": "Identify which cheat sheets are missing and start creating them",
           "done": false
@@ -75,16 +60,6 @@
       "tasks": [
         {
           "text": "Refuel Nissan",
-          "sub": "",
-          "done": false
-        },
-        {
-          "text": "Get a duplicate Nissan key made",
-          "sub": "Zip tie the spare key somewhere on the body of the van",
-          "done": false
-        },
-        {
-          "text": "Bring blanket and pillow inside",
           "sub": "",
           "done": false
         },
@@ -115,10 +90,6 @@
       "title": "From Backlog",
       "tasks": [
         {
-          "text": "3 radio kit options — update",
-          "done": true
-        },
-        {
           "text": "Complete programming for DA7X2 orders",
           "done": false
         },
@@ -129,7 +100,12 @@
       ]
     }
   ],
-  "grocery": [],
+  "grocery": [
+    {
+      "text": "milk",
+      "done": false
+    }
+  ],
   "notes": "",
   "backlog": [
     {
@@ -3518,6 +3494,5 @@
       ],
       "category": "Texas Trip Packing"
     }
-  ],
-  "lists": []
+  ]
 }
