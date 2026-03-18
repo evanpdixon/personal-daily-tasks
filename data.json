@@ -95,6 +95,10 @@
     {
       "text": "pickup TV",
       "done": false
+    },
+    {
+      "text": "fill up nissan",
+      "done": false
     }
   ],
   "notes": "",
