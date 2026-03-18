@@ -2,17 +2,6 @@
   "date": "2026-03-16",
   "sections": [
     {
-      "id": "patrick",
-      "title": "Radio Files — Patrick Green",
-      "tasks": [
-        {
-          "text": "Convert existing radio files for the D578",
-          "sub": "Take current files and prep/convert for Patrick's D578 radio",
-          "done": true
-        }
-      ]
-    },
-    {
       "id": "bs50",
       "title": "Add BS-50 to Website",
       "tasks": [
