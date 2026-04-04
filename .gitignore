@@ -18,3 +18,11 @@ RMETaskListener.xml
 .idea/
 *.swp
 *~
+
+# Standard ignores
+*.log
+*.db-shm
+*.db-wal
+.env
+*.xml
+node_modules/
